@@ -59,9 +59,12 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.modify"
 ]
 
-REDIRECT_URI = (
-    "http://127.0.0.1:5000/oauth2callback"
-)
+RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL')
+
+if RENDER_EXTERNAL_URL:
+    REDIRECT_URI = f"{RENDER_EXTERNAL_URL}/oauth2callback"
+else:
+    REDIRECT_URI = "http://127.0.0.1:5000/oauth2callback"
 
 
 # =========================================================
