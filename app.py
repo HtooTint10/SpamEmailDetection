@@ -40,7 +40,7 @@ app.secret_key = "spamguard-secret-key-change-this-later"
 
 
 # =========================================================
-# GOOGLE SETTINGS
+# GOOGLE SETTINGS & REDIRECT URI
 # =========================================================
 
 CLIENT_SECRETS_FILE = os.path.join(
@@ -48,24 +48,12 @@ CLIENT_SECRETS_FILE = os.path.join(
     "credentials.json"
 )
 
-# gmail.modify allows:
-#
-# - Reading Gmail messages
-# - Reading labels
-# - Moving messages
-# - Adding/removing labels
-#
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.modify"
 ]
 
-# app.py ထဲက Flow ဆောက်ထားသည့် နေရာတွင် -
-
-flow = Flow.from_client_secrets_file(
-    CLIENT_SECRETS_FILE,
-    scopes=SCOPES,
-    redirect_uri='https://spamemaildetection-63d0.onrender.com/oauth2callback'
-)
+# Render ပေါ်အတွက် REDIRECT_URI ကို variable အဖြစ် ကြေညာခြင်း
+REDIRECT_URI = 'https://spamemaildetection-63d0.onrender.com/oauth2callback'
 
 # =========================================================
 # GMAIL CONSTANTS
@@ -234,24 +222,17 @@ def google_login():
         session.clear()
 
         flow = Flow.from_client_secrets_file(
-
             CLIENT_SECRETS_FILE,
-
             scopes=SCOPES
-
         )
 
-        flow.redirect_uri = 'https://spamemaildetection-63d0.onrender.com/oauth2callback'
+        flow.redirect_uri = REDIRECT_URI
 
         authorization_url, state = (
             flow.authorization_url(
-
                 access_type="offline",
-
                 include_granted_scopes=False,
-
                 prompt="select_account consent"
-
             )
         )
 
@@ -356,10 +337,6 @@ def oauth2callback():
             bool(code_verifier)
         )
 
-        # -------------------------------------------------
-        # CHECK STATE
-        # -------------------------------------------------
-
         if not state:
 
             return """
@@ -396,10 +373,6 @@ Try Again
 
 </html>
 """, 400
-
-        # -------------------------------------------------
-        # CHECK CODE VERIFIER
-        # -------------------------------------------------
 
         if not code_verifier:
 
@@ -438,21 +411,13 @@ Try Again
 </html>
 """, 400
 
-        # -------------------------------------------------
-        # CREATE FLOW
-        # -------------------------------------------------
-
         flow = Flow.from_client_secrets_file(
-
             CLIENT_SECRETS_FILE,
-
             scopes=SCOPES,
-
             state=state
-
         )
 
-        flow.redirect_uri = 'https://spamemaildetection-63d0.onrender.com/oauth2callback'
+        flow.redirect_uri = REDIRECT_URI
 
         flow.code_verifier = code_verifier
 
@@ -470,19 +435,11 @@ Try Again
             "Google authentication successful!"
         )
 
-        # -------------------------------------------------
-        # CREATE GMAIL SERVICE
-        # -------------------------------------------------
-
         service = build(
             "gmail",
             "v1",
             credentials=credentials
         )
-
-        # -------------------------------------------------
-        # GET GOOGLE ACCOUNT
-        # -------------------------------------------------
 
         profile = (
             service.users()
@@ -501,10 +458,6 @@ Try Again
             "Logged-in Gmail account:",
             email_address
         )
-
-        # -------------------------------------------------
-        # SAVE CREDENTIALS
-        # -------------------------------------------------
 
         session["credentials"] = {
 
@@ -621,10 +574,6 @@ Try Again
 
 def get_credentials():
 
-    # -----------------------------------------------------
-    # CHECK SESSION
-    # -----------------------------------------------------
-
     if "credentials" not in session:
 
         raise Exception(
@@ -641,10 +590,6 @@ def get_credentials():
         raise Exception(
             "Gmail credentials are missing."
         )
-
-    # -----------------------------------------------------
-    # CREATE CREDENTIALS OBJECT
-    # -----------------------------------------------------
 
     credentials = Credentials(
 
@@ -674,10 +619,6 @@ def get_credentials():
         )
 
     )
-
-    # -----------------------------------------------------
-    # REFRESH EXPIRED TOKEN
-    # -----------------------------------------------------
 
     if (
         credentials.expired
@@ -786,11 +727,6 @@ def extract_sender_email(sender):
 
     sender = str(sender)
 
-    # Example:
-    #
-    # John Smith <john@example.com>
-    #
-
     if "<" in sender and ">" in sender:
 
         start = sender.rfind("<") + 1
@@ -803,22 +739,11 @@ def extract_sender_email(sender):
                 start:end
             ].strip()
 
-    # If there is no display name,
-    # return the complete value.
     return sender.strip()
 
 
 # =========================================================
 # GET ALL GMAIL MESSAGE IDS
-#
-# This function handles Gmail pagination.
-#
-# It can retrieve:
-#
-#     INBOX
-#     SPAM
-#
-# independently.
 # =========================================================
 
 def get_all_gmail_message_ids(
@@ -870,10 +795,6 @@ def get_all_gmail_message_ids(
             messages
         )
 
-        # -------------------------------------------------
-        # Optional limit
-        # -------------------------------------------------
-
         if (
             max_messages is not None
             and
@@ -917,10 +838,6 @@ def build_gmail_message_object(
     if not message_id:
 
         return None
-
-    # -----------------------------------------------------
-    # Get message metadata
-    # -----------------------------------------------------
 
     message = (
         service.users()
@@ -990,18 +907,10 @@ def build_gmail_message_object(
 
         date = "Unknown"
 
-    # -----------------------------------------------------
-    # Gmail labels
-    # -----------------------------------------------------
-
     label_ids = message.get(
         "labelIds",
         []
     )
-
-    # -----------------------------------------------------
-    # Determine actual Gmail mailbox
-    # -----------------------------------------------------
 
     if GMAIL_SPAM_LABEL in label_ids:
 
@@ -1028,15 +937,6 @@ def build_gmail_message_object(
             if mailbox == GMAIL_SPAM_LABEL
             else "inbox"
         )
-
-    # -----------------------------------------------------
-    # Return object
-    #
-    # IMPORTANT:
-    #
-    # Gmail mailbox information is completely separate
-    # from Linear SVM classification.
-    # -----------------------------------------------------
 
     return {
 
@@ -1065,10 +965,6 @@ def build_gmail_message_object(
         "date":
             date,
 
-        # =============================================
-        # REAL GMAIL LOCATION
-        # =============================================
-
         "gmail_label":
             actual_label,
 
@@ -1077,12 +973,6 @@ def build_gmail_message_object(
 
         "is_gmail_spam":
             actual_label == GMAIL_SPAM_LABEL,
-
-        # =============================================
-        # LINEAR SVM STATUS
-        #
-        # Newly loaded emails are NOT SCANNED.
-        # =============================================
 
         "scanned":
             False,
@@ -1257,23 +1147,6 @@ def gmail_account():
 
 # =========================================================
 # GMAIL INBOX + SPAM
-#
-# IMPORTANT:
-#
-# This endpoint now retrieves BOTH:
-#
-#     1. Real Gmail Inbox
-#     2. Real Gmail Spam
-#
-# Every message has:
-#
-#     gmail_label
-#     mailbox
-#     is_gmail_spam
-#
-# These describe the REAL Gmail folder.
-#
-# They are NOT the Linear SVM result.
 # =========================================================
 
 @app.route("/gmail-inbox")
@@ -1294,10 +1167,6 @@ def gmail_inbox():
             )
         )
 
-        # -------------------------------------------------
-        # REAL GMAIL INBOX
-        # -------------------------------------------------
-
         inbox_emails = (
             get_messages_from_gmail_folder(
                 service,
@@ -1310,10 +1179,6 @@ def gmail_inbox():
             "Real Gmail Inbox messages:",
             len(inbox_emails)
         )
-
-        # -------------------------------------------------
-        # REAL GMAIL SPAM
-        # -------------------------------------------------
 
         spam_emails = (
             get_messages_from_gmail_folder(
@@ -1328,22 +1193,11 @@ def gmail_inbox():
             len(spam_emails)
         )
 
-        # -------------------------------------------------
-        # COMBINE
-        # -------------------------------------------------
-
         emails = (
             inbox_emails
             +
             spam_emails
         )
-
-        # -------------------------------------------------
-        # REMOVE DUPLICATES
-        #
-        # Normally Gmail won't return the same message
-        # in both folders, but this makes the API safer.
-        # -------------------------------------------------
 
         unique_emails = {}
 
@@ -1362,13 +1216,6 @@ def gmail_inbox():
         emails = list(
             unique_emails.values()
         )
-
-        # -------------------------------------------------
-        # SORT
-        #
-        # Gmail API already gives a useful ordering inside
-        # each folder. We keep the combined result stable.
-        # -------------------------------------------------
 
         response = jsonify({
 
@@ -1418,9 +1265,6 @@ def gmail_inbox():
 
 # =========================================================
 # REAL GMAIL SPAM ENDPOINT
-#
-# This is also provided separately in case your frontend
-# wants to request only Gmail Spam.
 # =========================================================
 
 @app.route("/gmail-spam")
@@ -1513,7 +1357,6 @@ def scan_one_email_route(
 
         credentials = get_credentials()
 
-        # Build service so the session/token is validated.
         service = build(
             "gmail",
             "v1",
@@ -1528,18 +1371,10 @@ def scan_one_email_route(
             SpamPredictor
         )
 
-        # -------------------------------------------------
-        # GET FULL EMAIL
-        # -------------------------------------------------
-
         email = get_email_details(
             session["credentials"],
             message_id
         )
-
-        # -------------------------------------------------
-        # ONLY LINEAR SVM
-        # -------------------------------------------------
 
         model_name = "linear_svm"
 
@@ -1567,12 +1402,6 @@ def scan_one_email_route(
         is_spam = bool(
             prediction["is_spam"]
         )
-
-        # -------------------------------------------------
-        # DETERMINE REAL GMAIL LOCATION
-        #
-        # This is intentionally separate from SVM result.
-        # -------------------------------------------------
 
         real_message = (
             service.users()
@@ -1612,10 +1441,6 @@ def scan_one_email_route(
 
             mailbox = "other"
 
-        # -------------------------------------------------
-        # RESULT
-        # -------------------------------------------------
-
         result = {
 
             "id":
@@ -1651,10 +1476,6 @@ def scan_one_email_route(
                     "Unknown"
                 ),
 
-            # =============================================
-            # LINEAR SVM RESULT
-            # =============================================
-
             "label":
                 "SPAM"
                 if is_spam
@@ -1689,10 +1510,6 @@ def scan_one_email_route(
 
             "scanned":
                 True,
-
-            # =============================================
-            # REAL GMAIL LOCATION
-            # =============================================
 
             "gmail_label":
                 gmail_label,
@@ -1789,10 +1606,6 @@ def scan_gmail_route():
             scan_gmail_for_web
         )
 
-        # -------------------------------------------------
-        # ONLY LINEAR SVM
-        # -------------------------------------------------
-
         model_name = "linear_svm"
 
         results = scan_gmail_for_web(
@@ -1887,16 +1700,6 @@ def model_info():
 
 # =========================================================
 # MOVE MESSAGE TO REAL GMAIL SPAM
-#
-# REAL GMAIL OPERATION
-#
-# Adds:
-#     SPAM
-#
-# Removes:
-#     INBOX
-#
-# This changes the actual Gmail mailbox.
 # =========================================================
 
 @app.route(
@@ -1933,10 +1736,6 @@ def move_to_spam_route(
 
         service = get_gmail_service()
 
-        # -------------------------------------------------
-        # REAL GMAIL MODIFY OPERATION
-        # -------------------------------------------------
-
         modified_message = (
             service.users()
             .messages()
@@ -1961,10 +1760,6 @@ def move_to_spam_route(
             )
             .execute()
         )
-
-        # -------------------------------------------------
-        # VERIFY ACTUAL GMAIL LOCATION
-        # -------------------------------------------------
 
         labels_after = modified_message.get(
             "labelIds",
@@ -2037,16 +1832,6 @@ def move_to_spam_route(
 
 # =========================================================
 # MOVE MESSAGE TO REAL GMAIL INBOX / SAFE
-#
-# REAL GMAIL OPERATION
-#
-# Adds:
-#     INBOX
-#
-# Removes:
-#     SPAM
-#
-# This restores a Spam message to the real Gmail Inbox.
 # =========================================================
 
 @app.route(
@@ -2083,10 +1868,6 @@ def move_to_safe_route(
 
         service = get_gmail_service()
 
-        # -------------------------------------------------
-        # REAL GMAIL MODIFY OPERATION
-        # -------------------------------------------------
-
         modified_message = (
             service.users()
             .messages()
@@ -2111,10 +1892,6 @@ def move_to_safe_route(
             )
             .execute()
         )
-
-        # -------------------------------------------------
-        # VERIFY ACTUAL GMAIL LOCATION
-        # -------------------------------------------------
 
         labels_after = modified_message.get(
             "labelIds",
@@ -2234,10 +2011,6 @@ def email_details(
 
         service = get_gmail_service()
 
-        # =================================================
-        # GET EMAIL
-        # =================================================
-
         message = (
             service.users()
             .messages()
@@ -2311,10 +2084,6 @@ def email_details(
                 "was found in this email."
             )
 
-        # =================================================
-        # GET REAL GMAIL LOCATION
-        # =================================================
-
         label_ids = message.get(
             "labelIds",
             []
@@ -2337,10 +2106,6 @@ def email_details(
             gmail_location = "OTHER"
 
             gmail_mailbox = "other"
-
-        # =================================================
-        # READ SCAN STATUS
-        # =================================================
 
         scanned_param = request.args.get(
             "scanned",
@@ -2371,10 +2136,6 @@ def email_details(
             "model_accuracy"
         )
 
-        # =================================================
-        # UNSCANNED
-        # =================================================
-
         if not is_scanned:
 
             is_spam = False
@@ -2392,10 +2153,6 @@ def email_details(
             result_model = None
 
             result_accuracy = None
-
-        # =================================================
-        # SCANNED
-        # =================================================
 
         else:
 
@@ -2438,10 +2195,6 @@ def email_details(
 
                 confidence = 0
 
-        # =================================================
-        # ESCAPE HTML
-        # =================================================
-
         safe_subject = html.escape(
             str(subject)
         )
@@ -2462,10 +2215,6 @@ def email_details(
             str(body)
         )
 
-        # =================================================
-        # CONFIDENCE TEXT
-        # =================================================
-
         if (
             is_scanned
             and
@@ -2481,10 +2230,6 @@ def email_details(
             confidence_text = (
                 "Not scanned"
             )
-
-        # =================================================
-        # MODEL INFORMATION
-        # =================================================
 
         if (
             is_scanned
@@ -2522,10 +2267,6 @@ def email_details(
 
             model_html = ""
 
-        # =================================================
-        # GMAIL LOCATION HTML
-        # =================================================
-
         if gmail_mailbox == "spam":
 
             gmail_location_html = """
@@ -2554,10 +2295,6 @@ def email_details(
     </strong>
 </div>
 """
-
-        # =================================================
-        # EMAIL DETAILS HTML
-        # =================================================
 
         response = f"""
 <!DOCTYPE html>
@@ -3167,11 +2904,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     app.run(
-
         host="0.0.0.0",
-
         port=5000,
-
         debug=True
-
     )
