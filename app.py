@@ -59,9 +59,13 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.modify"
 ]
 
-RENDER_URL = os.environ.get('RENDER_EXTERNAL_URL', 'https://spamemaildetection-63d0.onrender.com')
+# app.py ထဲက Flow ဆောက်ထားသည့် နေရာတွင် -
 
-REDIRECT_URI = f"{RENDER_URL}/oauth2callback"
+flow = Flow.from_client_secrets_file(
+    CLIENT_SECRETS_FILE,
+    scopes=SCOPES,
+    redirect_uri='https://spamemaildetection-63d0.onrender.com/oauth2callback'
+)
 
 # =========================================================
 # GMAIL CONSTANTS
@@ -237,7 +241,7 @@ def google_login():
 
         )
 
-        flow.redirect_uri = REDIRECT_URI
+        flow.redirect_uri = 'https://spamemaildetection-63d0.onrender.com/oauth2callback'
 
         authorization_url, state = (
             flow.authorization_url(
@@ -448,7 +452,7 @@ Try Again
 
         )
 
-        flow.redirect_uri = REDIRECT_URI
+        flow.redirect_uri = 'https://spamemaildetection-63d0.onrender.com/oauth2callback'
 
         flow.code_verifier = code_verifier
 
