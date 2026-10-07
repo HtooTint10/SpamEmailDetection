@@ -1,0 +1,99 @@
+http://127.0.0.1:5000
+
+
+MODEL COMPARISON
+Linear SVM: 97.93%
+Logistic Regression: 97.88%
+SGD Classifier: 97.70%
+Multinomial Naive Bayes: 94.43%
+Complement Naive Bayes: 94.43%
+Random Forest: 94.30%
+
+
+https://zenodo.org/records/8339691
+
+
+1. Obvious Spam
+Subject: Congratulations! You Won $1,000,000
+Congratulations! You have been selected as the lucky winner of our
+international lottery. You have won $1,000,000.
+
+To claim your prize, please click the link below and provide your
+full name, address, phone number, and bank account information.
+
+This offer is available for a limited time only. Claim your prize now!
+Expected: Spam
+...........
+2.Phishing Email
+Subject: Urgent: Verify Your Account
+Dear Customer,
+
+We detected unusual activity on your account. Your account may be
+suspended unless you verify your information immediately.
+
+Please click the link below to confirm your identity and update your
+account details.
+
+Failure to verify your account within 24 hours will result in permanent
+suspension.
+
+Thank you.
+Expected: Spam
+................
+3.Fake Job Offer
+Subject: You Have Been Selected for a High Paying Job
+Dear Applicant,
+
+We are pleased to inform you that you have been selected for an
+exciting work from home opportunity.
+
+You can earn $5,000 per month with no previous experience required.
+To start your job immediately, send your full name, bank account
+details, and a small registration fee.
+
+Reply to this email as soon as possible to secure your position.
+Expected: Spam
+........
+4. Normal Personal Email
+Subject: Meeting Tomorrow
+Hi Sarah,
+
+Just a reminder that we have our project meeting tomorrow at 10 AM.
+Please bring the latest version of the presentation and the project
+report.
+
+Let me know if you need anything before the meeting.
+
+Best,
+John
+Expected: Ham / Not Spam
+......
+5. University Email
+Subject: Data Science Project Submission
+Dear Students,
+
+This is a reminder that the Data Science project presentation will
+be held on Friday.
+
+Please submit your final PowerPoint presentation and project report
+before 5 PM on Thursday.
+
+If you have any questions, please contact the instructor.
+
+Best regards,
+Department of Computer Science
+Expected: Ham / Not Spam
+.......
+6. Normal Work Email
+Subject: Monthly Report
+Hello Team,
+
+The monthly sales report has been completed and attached to this
+email.
+
+Please review the figures and let me know if there are any corrections.
+We will discuss the report during our meeting next Monday.
+
+Regards,
+Michael
+Expected: Ham / Not Spam

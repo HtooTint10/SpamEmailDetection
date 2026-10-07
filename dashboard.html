@@ -1,0 +1,4895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - SpamGuard AI</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(91, 55, 232, .13),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(49, 85, 237, .12),
+                    transparent 30%
+                ),
+                #070914;
+
+            color: #f4f6ff;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+        }
+
+        button,
+        a {
+            font-family: inherit;
+        }
+
+        button {
+            border: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .ambient {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -3;
+            opacity: .5;
+        }
+
+        .ambient-one {
+            width: 420px;
+            height: 420px;
+            left: -180px;
+            top: 80px;
+
+            background: rgba(91, 55, 232, .22);
+
+            animation:
+                ambientMoveOne
+                12s
+                ease-in-out
+                infinite;
+        }
+
+        .ambient-two {
+            width: 380px;
+            height: 380px;
+            right: -150px;
+            top: 300px;
+
+            background: rgba(49, 85, 237, .20);
+
+            animation:
+                ambientMoveTwo
+                15s
+                ease-in-out
+                infinite;
+        }
+
+        .ambient-three {
+            width: 300px;
+            height: 300px;
+            left: 45%;
+            bottom: -180px;
+
+            background: rgba(117, 75, 255, .14);
+
+            animation:
+                ambientMoveThree
+                13s
+                ease-in-out
+                infinite;
+        }
+
+        .grid-background {
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+            z-index: -2;
+
+            opacity: .25;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent 92%
+                );
+        }
+
+        @keyframes ambientMoveOne {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(70px, 40px);
+            }
+        }
+
+        @keyframes ambientMoveTwo {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(-70px, 70px);
+            }
+        }
+
+        @keyframes ambientMoveThree {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(100px);
+            }
+        }
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .header {
+            width: min(1380px, calc(100% - 40px));
+            min-height: 70px;
+
+            position: sticky;
+            top: 18px;
+            z-index: 100;
+
+            margin: 18px auto 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 18px 0 20px;
+
+            background: rgba(10, 13, 29, .78);
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 18px;
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.28),
+                inset 0 1px 0 rgba(255,255,255,.04);
+
+            animation:
+                headerDrop
+                .7s
+                ease
+                both;
+        }
+
+        @keyframes headerDrop {
+            from {
+                opacity: 0;
+                transform: translateY(-18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================================
+           LOGO
+        ========================================================= */
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            color: #fff;
+
+            font-size: 18px;
+            font-weight: 750;
+
+            letter-spacing: -.3px;
+        }
+
+        .logo-icon-wrap {
+            position: relative;
+        }
+
+        .logo-icon {
+            width: 39px;
+            height: 39px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            color: #fff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3155ed,
+                    #713cf1
+                );
+
+            box-shadow:
+                0 0 25px rgba(91,55,232,.35),
+                inset 0 1px 0 rgba(255,255,255,.2);
+
+            transition: .25s ease;
+        }
+
+        .logo:hover .logo-icon {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 30px rgba(91,55,232,.55),
+                inset 0 1px 0 rgba(255,255,255,.2);
+        }
+
+        .blue {
+            color: #7187ff;
+        }
+
+        /* =========================================================
+           NEW MAIL INDICATOR
+        ========================================================= */
+
+        .new-mail-dot {
+            position: absolute;
+
+            width: 11px;
+            height: 11px;
+
+            right: -2px;
+            top: -2px;
+
+            border-radius: 50%;
+
+            background: #ff4f67;
+
+            border:
+                2px solid
+                #0b0e20;
+
+            box-shadow:
+                0 0 0 0 rgba(255,79,103,.65),
+                0 0 12px rgba(255,79,103,.85);
+
+            display: none;
+
+            animation:
+                newMailPulse
+                1.5s
+                infinite;
+        }
+
+        .new-mail-dot.show {
+            display: block;
+        }
+
+        @keyframes newMailPulse {
+            0% {
+                box-shadow:
+                    0 0 0 0 rgba(255,79,103,.65),
+                    0 0 12px rgba(255,79,103,.85);
+            }
+
+            70% {
+                box-shadow:
+                    0 0 0 8px rgba(255,79,103,0),
+                    0 0 18px rgba(255,79,103,.95);
+            }
+
+            100% {
+                box-shadow:
+                    0 0 0 0 rgba(255,79,103,0),
+                    0 0 12px rgba(255,79,103,.85);
+            }
+        }
+
+        .new-mail-count {
+            position: absolute;
+
+            min-width: 18px;
+            height: 18px;
+
+            right: -9px;
+            top: -11px;
+
+            padding: 0 5px;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 20px;
+
+            background: #ff4f67;
+            color: #fff;
+
+            border:
+                2px solid
+                #0b0e20;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            z-index: 5;
+
+            box-shadow:
+                0 5px 15px rgba(255,79,103,.35);
+        }
+
+        .new-mail-count.show {
+            display: flex;
+        }
+
+        /* =========================================================
+           HEADER RIGHT
+        ========================================================= */
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .account-badge {
+            max-width: 330px;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 9px 13px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 11px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            color: #d9ddf0;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            transition: .25s ease;
+        }
+
+        .account-badge:hover {
+            border-color:
+                rgba(113,135,255,.4);
+
+            background:
+                rgba(113,135,255,.08);
+        }
+
+        .account-badge i {
+            color: #6f83ff;
+        }
+
+        .account-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 9px 13px;
+
+            border:
+                1px solid
+                rgba(255,100,100,.2);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,75,75,.07);
+
+            color: #ff8585;
+
+            font-size: 12px;
+            font-weight: 650;
+
+            transition: .25s ease;
+        }
+
+        .logout-btn:hover {
+            color: #fff;
+
+            background:
+                rgba(255,75,75,.17);
+
+            border-color:
+                rgba(255,100,100,.4);
+
+            transform: translateY(-2px);
+        }
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .page {
+            width: min(1380px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 55px 0 80px;
+        }
+
+        /* =========================================================
+           PAGE TITLE
+        ========================================================= */
+
+        .page-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 25px;
+
+            margin-bottom: 30px;
+
+            animation:
+                fadeUp
+                .7s
+                ease
+                .1s
+                both;
+        }
+
+        .page-title h1 {
+            margin-bottom: 9px;
+
+            font-size:
+                clamp(
+                    30px,
+                    4vw,
+                    43px
+                );
+
+            line-height: 1.05;
+
+            letter-spacing: -1.5px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff 20%,
+                    #a8b7ff 55%,
+                    #7956f5 100%
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .page-title p {
+            color: #8d96b2;
+            font-size: 14px;
+        }
+
+        /* =========================================================
+           STATS
+        ========================================================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 28px;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+
+            min-height: 125px;
+
+            padding: 23px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20,24,48,.88),
+                    rgba(10,13,29,.76)
+                );
+
+            box-shadow:
+                0 18px 50px rgba(0,0,0,.18),
+                inset 0 1px 0 rgba(255,255,255,.035);
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            transition: .3s ease;
+
+            animation:
+                fadeUp
+                .7s
+                ease
+                .2s
+                both;
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 120px;
+            height: 120px;
+
+            right: -55px;
+            top: -65px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(91,55,232,.12);
+
+            filter: blur(25px);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+
+            border-color:
+                rgba(113,135,255,.22);
+
+            box-shadow:
+                0 25px 65px rgba(0,0,0,.28),
+                0 0 35px rgba(80,60,220,.08);
+        }
+
+        .stat-title {
+            color: #7f89a6;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            margin-bottom: 11px;
+        }
+
+        .stat-number {
+            font-size: 34px;
+            line-height: 1;
+
+            font-weight: 750;
+
+            color: #f8f9ff;
+        }
+
+        .stat-number.safe {
+            color: #48d99a;
+        }
+
+        .stat-number.spam {
+            color: #ff6875;
+        }
+
+        /* =========================================================
+           TOOLBAR
+        ========================================================= */
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 17px;
+
+            animation:
+                fadeUp
+                .7s
+                ease
+                .3s
+                both;
+        }
+
+        .filters {
+            display: flex;
+            gap: 5px;
+
+            padding: 5px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 13px;
+
+            background:
+                rgba(13,16,34,.72);
+
+            backdrop-filter: blur(12px);
+
+            overflow-x: auto;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 9px 14px;
+
+            border-radius: 9px;
+
+            background: transparent;
+
+            color: #7f89a6;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+            font-size: 12px;
+            font-weight: 650;
+
+            transition: .25s ease;
+        }
+
+        .filter-btn:hover {
+            color: #dce2ff;
+
+            background:
+                rgba(255,255,255,.05);
+        }
+
+        .filter-btn.active {
+            color: #fff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3155ed,
+                    #673be8
+                );
+
+            box-shadow:
+                0 5px 18px
+                rgba(73,65,225,.25);
+        }
+
+        .scan-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 11px 18px;
+
+            border-radius: 11px;
+
+            color: #fff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3155ed,
+                    #713cf1
+                );
+
+            box-shadow:
+                0 8px 25px
+                rgba(66,59,220,.25);
+
+            cursor: pointer;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            transition: .25s ease;
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 32px
+                rgba(66,59,220,.38);
+        }
+
+        .scan-btn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* =========================================================
+           NEW MAIL BUTTON
+        ========================================================= */
+
+        .new-mail-btn {
+            display: none;
+
+            align-items: center;
+            gap: 7px;
+
+            padding: 10px 14px;
+
+            border-radius: 10px;
+
+            color: #fff;
+
+            background:
+                rgba(255,79,103,.10);
+
+            border:
+                1px solid
+                rgba(255,79,103,.22);
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            animation:
+                newButtonPulse
+                1.8s
+                infinite;
+        }
+
+        .new-mail-btn.show {
+            display: inline-flex;
+        }
+
+        .new-mail-btn:hover {
+            background:
+                rgba(255,79,103,.18);
+        }
+
+        @keyframes newButtonPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 0
+                    rgba(255,79,103,0);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 25px
+                    rgba(255,79,103,.15);
+            }
+        }
+
+        /* =========================================================
+           LOADING
+        ========================================================= */
+
+        .loading {
+            display: none;
+
+            margin-bottom: 13px;
+
+            color: #8594ff;
+
+            font-size: 12px;
+
+            text-align: right;
+        }
+
+        .loading i {
+            margin-right: 5px;
+        }
+
+        /* =========================================================
+           EMAIL SECTION
+        ========================================================= */
+
+        .email-section {
+            position: relative;
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 19px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18,22,44,.90),
+                    rgba(9,12,27,.88)
+                );
+
+            box-shadow:
+                0 25px 75px rgba(0,0,0,.25),
+                inset 0 1px 0 rgba(255,255,255,.035);
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+
+            animation:
+                fadeUp
+                .7s
+                ease
+                .4s
+                both;
+        }
+
+        .email-section::before {
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 180px;
+
+            left: 25%;
+            top: -160px;
+
+            background:
+                rgba(86,68,235,.14);
+
+            filter: blur(60px);
+
+            pointer-events: none;
+        }
+
+        .section-head {
+            position: relative;
+
+            min-height: 67px;
+
+            padding: 17px 22px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.07);
+        }
+
+        .section-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-head h2 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .section-count {
+            padding: 4px 8px;
+
+            border-radius: 20px;
+
+            color: #9ca8ff;
+
+            background:
+                rgba(91,105,255,.10);
+
+            border:
+                1px solid
+                rgba(100,110,255,.14);
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .account-inline {
+            color: #7588ff;
+
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        /* =========================================================
+           NEW MAIL BANNER
+        ========================================================= */
+
+        .new-mail-banner {
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            padding: 9px 15px;
+
+            color: #dce2ff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(78,83,230,.10),
+                    rgba(255,79,103,.08),
+                    rgba(78,83,230,.10)
+                );
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.06);
+
+            font-size: 11px;
+            font-weight: 650;
+
+            cursor: pointer;
+        }
+
+        .new-mail-banner.show {
+            display: flex;
+        }
+
+        .new-mail-banner i {
+            color: #ff5d73;
+        }
+
+        .new-mail-banner strong {
+            color: #fff;
+        }
+
+        /* =========================================================
+           MAILBOX BADGE
+        ========================================================= */
+
+        .mailbox-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+
+            margin-top: 8px;
+
+            width: max-content;
+
+            padding: 4px 8px;
+
+            border-radius: 20px;
+
+            font-size: 9px;
+            font-weight: 750;
+
+            letter-spacing: .2px;
+        }
+
+        .mailbox-badge.inbox {
+            color: #7f9bff;
+
+            background:
+                rgba(74,98,255,.09);
+
+            border:
+                1px solid
+                rgba(90,110,255,.14);
+        }
+
+        .mailbox-badge.spam {
+            color: #ff7883;
+
+            background:
+                rgba(255,75,85,.09);
+
+            border:
+                1px solid
+                rgba(255,75,85,.14);
+        }
+
+        .mailbox-badge.other {
+            color: #9ca5bb;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+        }
+
+        /* =========================================================
+           EMAIL ROW
+        ========================================================= */
+
+        .email-row {
+            position: relative;
+
+            padding: 18px 22px;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(240px, 1fr)
+                115px
+                140px
+                330px;
+
+            gap: 17px;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.055);
+
+            transition: .25s ease;
+        }
+
+        .email-row:last-child {
+            border-bottom: 0;
+        }
+
+        .email-row:hover {
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(75,74,210,.08),
+                    rgba(75,74,210,.025)
+                );
+        }
+
+        .email-row.new-email {
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(67,82,225,.10),
+                    rgba(255,79,103,.045)
+                );
+
+            border-left:
+                2px solid
+                #ff5d73;
+        }
+
+        .email-row.new-email::before {
+            content: "";
+
+            position: absolute;
+
+            width: 5px;
+            height: 5px;
+
+            left: 8px;
+            top: 21px;
+
+            border-radius: 50%;
+
+            background: #ff5d73;
+
+            box-shadow:
+                0 0 10px #ff5d73;
+        }
+
+        .email-main {
+            min-width: 0;
+        }
+
+        .subject-line {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            min-width: 0;
+        }
+
+        .subject {
+            color: #eef0fb;
+
+            font-size: 13px;
+            font-weight: 650;
+
+            margin-bottom: 5px;
+
+            word-break: break-word;
+        }
+
+        .sender {
+            color: #77829e;
+
+            font-size: 11px;
+
+            word-break: break-word;
+        }
+
+        .new-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            padding: 3px 7px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(255,79,103,.12);
+
+            border:
+                1px solid
+                rgba(255,79,103,.20);
+
+            color: #ff7385;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            letter-spacing: .5px;
+        }
+
+        /* =========================================================
+           RESULT
+        ========================================================= */
+
+        .result {
+            width: max-content;
+            min-width: 82px;
+
+            margin: auto;
+
+            padding: 6px 11px;
+
+            border-radius: 30px;
+
+            text-align: center;
+
+            font-size: 10px;
+            font-weight: 750;
+
+            letter-spacing: .3px;
+        }
+
+        .result.safe {
+            color: #4be09b;
+
+            background:
+                rgba(55,211,137,.10);
+
+            border:
+                1px solid
+                rgba(55,211,137,.15);
+        }
+
+        .result.spam {
+            color: #ff6d78;
+
+            background:
+                rgba(255,75,85,.10);
+
+            border:
+                1px solid
+                rgba(255,75,85,.15);
+        }
+
+        .result.unscanned {
+            color: #8b94a9;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,.06);
+        }
+
+        .confidence {
+            color: #7d87a1;
+
+            font-size: 11px;
+
+            text-align: center;
+        }
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+
+            gap: 7px;
+
+            flex-wrap: wrap;
+        }
+
+        .action {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 7px 10px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 10px;
+            font-weight: 650;
+
+            transition: .22s ease;
+        }
+
+        .action:hover {
+            transform: translateY(-1px);
+        }
+
+        .action:disabled {
+            opacity: .55;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+        .scan-one,
+        .details {
+            color: #8798ff;
+
+            background:
+                rgba(69,83,220,.10);
+
+            border:
+                1px solid
+                rgba(100,110,255,.12);
+        }
+
+        .scan-one:hover,
+        .details:hover {
+            background:
+                rgba(69,83,220,.18);
+        }
+
+        .move-spam {
+            color: #ff727c;
+
+            background:
+                rgba(255,75,85,.08);
+
+            border:
+                1px solid
+                rgba(255,75,85,.12);
+        }
+
+        .move-spam:hover {
+            background:
+                rgba(255,75,85,.16);
+        }
+
+        .move-safe {
+            color: #4bdfa0;
+
+            background:
+                rgba(55,211,137,.08);
+
+            border:
+                1px solid
+                rgba(55,211,137,.12);
+        }
+
+        .move-safe:hover {
+            background:
+                rgba(55,211,137,.16);
+        }
+
+        /* =========================================================
+           EMPTY
+        ========================================================= */
+
+        .empty {
+            min-height: 280px;
+
+            padding: 65px 20px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            color: #77829d;
+        }
+
+        .empty i {
+            margin-bottom: 17px;
+
+            color: #687eff;
+
+            font-size: 42px;
+
+            filter:
+                drop-shadow(
+                    0 0 18px
+                    rgba(86,93,255,.3)
+                );
+        }
+
+        .empty h3 {
+            margin-bottom: 8px;
+
+            color: #eef0fb;
+
+            font-size: 16px;
+        }
+
+        .empty p {
+            max-width: 500px;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           TOAST
+        ========================================================= */
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            max-width: 430px;
+
+            padding: 13px 17px;
+
+            display: none;
+
+            z-index: 9999;
+
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(26,31,58,.96),
+                    rgba(13,17,35,.96)
+                );
+
+            color: #fff;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.4),
+                0 0 30px rgba(69,59,200,.13);
+
+            font-size: 12px;
+
+            backdrop-filter: blur(15px);
+
+            animation:
+                toastIn
+                .3s
+                ease;
+        }
+
+        .toast.new-toast {
+            border-color:
+                rgba(255,79,103,.25);
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.4),
+                0 0 30px rgba(255,79,103,.13);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1150px) {
+
+            .email-row {
+                grid-template-columns:
+                    minmax(190px, 1fr)
+                    100px
+                    120px
+                    270px;
+            }
+
+        }
+
+        @media (max-width: 900px) {
+
+            .email-row {
+                grid-template-columns:
+                    minmax(180px, 1fr)
+                    100px
+                    240px;
+            }
+
+            .confidence {
+                display: none;
+            }
+
+        }
+
+        @media (max-width: 850px) {
+
+            .header {
+                width: calc(100% - 28px);
+                margin-top: 14px;
+                top: 14px;
+            }
+
+            .page {
+                width: calc(100% - 28px);
+                padding-top: 45px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .email-row {
+                grid-template-columns: 1fr;
+                gap: 11px;
+            }
+
+            .result {
+                margin: 0;
+            }
+
+            .confidence {
+                display: block;
+                text-align: left;
+            }
+
+            .actions {
+                justify-content: flex-start;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .header {
+                height: auto;
+                min-height: 65px;
+
+                padding: 10px 12px;
+
+                flex-wrap: wrap;
+
+                gap: 9px;
+            }
+
+            .logo {
+                font-size: 15px;
+            }
+
+            .logo-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .header-right {
+                width: 100%;
+            }
+
+            .account-badge {
+                flex: 1;
+                max-width: none;
+            }
+
+            .logout-btn {
+                flex-shrink: 0;
+            }
+
+            .filters {
+                overflow-x: auto;
+            }
+
+            .filter-btn {
+                white-space: nowrap;
+            }
+
+            .scan-btn {
+                width: 100%;
+            }
+
+            .new-mail-btn {
+                justify-content: center;
+            }
+
+            .section-head {
+                align-items: flex-start;
+                flex-direction: column;
+
+                gap: 6px;
+            }
+
+            .email-row {
+                padding: 17px;
+            }
+
+        }
+
+        @media (max-width: 430px) {
+
+            .page {
+                width: calc(100% - 20px);
+            }
+
+            .header {
+                width: calc(100% - 20px);
+            }
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+
+            .account-badge {
+                font-size: 10px;
+            }
+
+            .logout-btn {
+                padding: 9px 10px;
+            }
+
+            .logout-btn span {
+                display: none;
+            }
+
+        }
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         BACKGROUND
+    ========================================================== -->
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="ambient ambient-three"></div>
+    <div class="grid-background"></div>
+
+
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
+
+    <header class="header">
+
+        <a
+            href="/dashboard"
+            class="logo"
+        >
+
+            <span class="logo-icon-wrap">
+
+                <span class="logo-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+
+                <span
+                    id="newMailDot"
+                    class="new-mail-dot"
+                ></span>
+
+                <span
+                    id="newMailCount"
+                    class="new-mail-count"
+                >
+                    0
+                </span>
+
+            </span>
+
+            <span>
+                Spam<span class="blue">Guard</span> AI
+            </span>
+
+        </a>
+
+
+        <div class="header-right">
+
+            <div
+                class="account-badge"
+                title="Connected Gmail account"
+            >
+
+                <i class="fa-brands fa-google"></i>
+
+                <span
+                    class="account-text"
+                    id="headerAccount"
+                >
+                    Loading account...
+                </span>
+
+            </div>
+
+
+            <a
+                href="/logout"
+                class="logout-btn"
+                onclick="clearDashboardCache()"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <main class="page">
+
+
+        <!-- =====================================================
+             TITLE
+        ====================================================== -->
+
+        <div class="page-title">
+
+            <div>
+
+                <h1>
+                    Email Security Dashboard
+                </h1>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STATISTICS
+        ====================================================== -->
+
+        <div class="stats">
+
+            <div class="card">
+
+                <div class="stat-title">
+                    Total Scanned
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="total"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="stat-title">
+                    Safe Emails
+                </div>
+
+                <div
+                    class="stat-number safe"
+                    id="safe"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="stat-title">
+                    Spam Detected
+                </div>
+
+                <div
+                    class="stat-number spam"
+                    id="spam"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             TOOLBAR
+        ====================================================== -->
+
+        <div class="toolbar">
+
+            <div class="filters">
+
+                <button
+                    class="filter-btn active"
+                    onclick="setFilter('all', this)"
+                >
+                    <i class="fa-solid fa-layer-group"></i>
+                    All Emails
+                </button>
+
+
+                <button
+                    class="filter-btn"
+                    onclick="setFilter('gmail-inbox', this)"
+                >
+                    <i class="fa-solid fa-inbox"></i>
+                    Inbox
+                </button>
+
+
+                <button
+                    class="filter-btn"
+                    onclick="setFilter('gmail-spam', this)"
+                >
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Gmail Spam
+                </button>
+
+
+                <button
+                    class="filter-btn"
+                    onclick="setFilter('spam', this)"
+                >
+                    <i class="fa-solid fa-shield-virus"></i>
+                    Safe Emails
+                </button>
+
+
+                <button
+                    class="filter-btn"
+                    onclick="setFilter('safe', this)"
+                >
+                    <i class="fa-solid fa-circle-check"></i>
+                    Spam Detected
+                </button>
+
+            </div>
+
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                    flex-wrap:wrap;
+                    justify-content:flex-end;
+                "
+            >
+
+                <button
+                    id="newMailButton"
+                    class="new-mail-btn"
+                    onclick="showNewEmails()"
+                >
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    <span id="newMailButtonText">
+                        New mail
+                    </span>
+
+                </button>
+
+
+                <button
+                    id="scanAllButton"
+                    class="scan-btn"
+                    onclick="scanGmail()"
+                >
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    Scan All Mails
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             LOADING
+        ====================================================== -->
+
+        <div
+            id="loading"
+            class="loading"
+        >
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            Scanning Gmail with Linear SVM...
+
+        </div>
+
+
+        <!-- =====================================================
+             EMAIL SECTION
+        ====================================================== -->
+
+        <section class="email-section">
+
+            <div class="section-head">
+
+                <div class="section-title-wrap">
+
+                    <h2>
+
+                        <i
+                            class="fa-solid fa-envelope"
+                            style="
+                                color:#7387ff;
+                                margin-right:7px;
+                            "
+                        ></i>
+
+                        Gmail Mail
+
+                    </h2>
+
+                    <span
+                        id="sectionCount"
+                        class="section-count"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <span
+                    class="account-inline"
+                    id="account"
+                >
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <!-- NEW MAIL BANNER -->
+
+            <div
+                id="newMailBanner"
+                class="new-mail-banner"
+                onclick="showNewEmails()"
+            >
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>
+
+                    <strong id="newMailBannerCount">
+                        0
+                    </strong>
+
+                    new email(s) received
+
+                </span>
+
+                <span>
+                    Click to view
+                </span>
+
+            </div>
+
+
+            <div id="results">
+
+                <div class="empty">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <h3>
+                        Loading Gmail...
+                    </h3>
+
+                    <p>
+                        Retrieving real Gmail Inbox and Spam messages.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         TOAST
+    ========================================================== -->
+
+    <div
+        class="toast"
+        id="toast"
+    ></div>
+
+
+    <script>
+
+        /* =========================================================
+           STORAGE
+        ========================================================= */
+
+        const INBOX_STORAGE_KEY =
+            "spamguard_inbox_v6";
+
+        const SCAN_STORAGE_KEY =
+            "spamguard_scan_results_v6";
+
+        const ACCOUNT_STORAGE_KEY =
+            "spamguard_account_v6";
+
+
+        const OLD_CACHE_KEYS = [
+
+            "spamguard_inbox_v5",
+            "spamguard_scan_results_v5",
+            "spamguard_account_v5",
+
+            "spamguard_inbox_v4",
+            "spamguard_scan_results_v4",
+            "spamguard_account_v4"
+
+        ];
+
+
+        /* =========================================================
+           STATE
+        ========================================================= */
+
+        let inboxEmails = [];
+
+        let allResults = [];
+
+        let currentFilter = "all";
+
+        let loadingInbox = false;
+
+        let scanningAll = false;
+
+        let refreshingInbox = false;
+
+        let newEmailIds = new Set();
+
+        let newMailCount = 0;
+
+        let initialInboxLoaded = false;
+
+        const INBOX_REFRESH_INTERVAL = 10000;
+
+
+        /* =========================================================
+           INITIAL LOAD
+        ========================================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async () => {
+
+                clearOldCacheVersions();
+
+                restoreCachedDashboard();
+
+                await ensureGmailInboxLoaded(true);
+
+            }
+        );
+
+
+        /* =========================================================
+           AUTO REFRESH
+        ========================================================= */
+
+        setInterval(
+            async () => {
+
+                if (
+                    !scanningAll &&
+                    !loadingInbox &&
+                    !refreshingInbox
+                ) {
+
+                    await ensureGmailInboxLoaded(false);
+
+                }
+
+            },
+            INBOX_REFRESH_INTERVAL
+        );
+
+
+        /* =========================================================
+           CLEAR OLD CACHE
+        ========================================================= */
+
+        function clearOldCacheVersions() {
+
+            OLD_CACHE_KEYS.forEach(
+                key => {
+
+                    try {
+
+                        localStorage.removeItem(
+                            key
+                        );
+
+                    } catch (error) {
+
+                        console.warn(
+                            "Could not remove old cache:",
+                            key
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =========================================================
+           GMAIL REFRESH
+        ========================================================= */
+
+        async function ensureGmailInboxLoaded(
+            firstLoad = false
+        ) {
+
+            if (
+                loadingInbox ||
+                refreshingInbox ||
+                scanningAll
+            ) {
+
+                return;
+
+            }
+
+
+            if (firstLoad) {
+
+                loadingInbox = true;
+
+            } else {
+
+                refreshingInbox = true;
+
+            }
+
+
+            const previousIds =
+                new Set(
+                    inboxEmails.map(
+                        email =>
+                            String(email.id)
+                    )
+                );
+
+
+            try {
+
+                /* =================================================
+                   ACCOUNT
+                ================================================= */
+
+                const accountResponse =
+                    await fetch(
+                        "/gmail-account",
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const accountData =
+                    await accountResponse.json();
+
+
+                if (
+                    !accountResponse.ok ||
+                    !accountData.success
+                ) {
+
+                    throw new Error(
+                        accountData.error ||
+                        "Gmail is not connected."
+                    );
+
+                }
+
+
+                const account =
+                    accountData.email ||
+                    "Gmail";
+
+
+                /* =================================================
+                   ACCOUNT CHANGE
+                ================================================= */
+
+                const oldAccount =
+                    localStorage.getItem(
+                        ACCOUNT_STORAGE_KEY
+                    );
+
+
+                if (
+                    oldAccount &&
+                    oldAccount !== account
+                ) {
+
+                    inboxEmails = [];
+
+                    allResults = [];
+
+                    newEmailIds =
+                        new Set();
+
+                    newMailCount = 0;
+
+                    localStorage.removeItem(
+                        INBOX_STORAGE_KEY
+                    );
+
+                    localStorage.removeItem(
+                        SCAN_STORAGE_KEY
+                    );
+
+                }
+
+
+                setAccount(account);
+
+
+                /* =================================================
+                   GET BOTH REAL GMAIL LOCATIONS
+                   /gmail-inbox returns Inbox + Spam
+                ================================================= */
+
+                const response =
+                    await fetch(
+                        "/gmail-inbox",
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to load Gmail."
+                    );
+
+                }
+
+
+                const gmailEmails =
+                    Array.isArray(data.emails)
+                        ? data.emails
+                        : [];
+
+
+                /* =================================================
+                   DETECT NEW MESSAGES
+                ================================================= */
+
+                const detectedNewIds =
+                    new Set();
+
+
+                if (initialInboxLoaded) {
+
+                    gmailEmails.forEach(
+                        email => {
+
+                            const id =
+                                String(email.id);
+
+
+                            if (
+                                !previousIds.has(id)
+                            ) {
+
+                                detectedNewIds.add(id);
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   PRESERVE OLD SCANS
+                ================================================= */
+
+                const previousById =
+                    new Map(
+                        inboxEmails.map(
+                            email => [
+                                String(email.id),
+                                email
+                            ]
+                        )
+                    );
+
+
+                /* =================================================
+                   BUILD FRESH GMAIL DATA
+                ================================================= */
+
+                inboxEmails =
+                    gmailEmails.map(
+                        email => {
+
+                            const id =
+                                String(email.id);
+
+
+                            const old =
+                                previousById.get(id);
+
+
+                            /*
+                             * IMPORTANT:
+                             *
+                             * Always use the NEW Gmail response
+                             * for:
+                             *
+                             * mailbox
+                             * gmail_label
+                             * is_gmail_spam
+                             *
+                             * This prevents a moved message from
+                             * keeping stale folder information.
+                             */
+
+
+                            if (
+                                old &&
+                                old.scanned === true &&
+                                (
+                                    old.is_spam === true ||
+                                    old.is_spam === false
+                                )
+                            ) {
+
+                                return {
+
+                                    ...email,
+
+                                    scanned: true,
+
+                                    is_spam:
+                                        old.is_spam,
+
+                                    confidence:
+                                        old.confidence,
+
+                                    label:
+                                        old.label,
+
+                                    model:
+                                        old.model,
+
+                                    model_name:
+                                        old.model_name,
+
+                                    model_accuracy:
+                                        old.model_accuracy,
+
+                                    is_new:
+                                        newEmailIds.has(id) ||
+                                        detectedNewIds.has(id)
+
+                                };
+
+                            }
+
+
+                            return {
+
+                                ...email,
+
+                                scanned: false,
+
+                                is_spam: undefined,
+
+                                confidence: undefined,
+
+                                label: undefined,
+
+                                model: undefined,
+
+                                model_name: undefined,
+
+                                model_accuracy: undefined,
+
+                                is_new:
+                                    newEmailIds.has(id) ||
+                                    detectedNewIds.has(id)
+
+                            };
+
+                        }
+                    );
+
+
+                /* =================================================
+                   NEW MESSAGE IDS
+                ================================================= */
+
+                detectedNewIds.forEach(
+                    id => {
+
+                        newEmailIds.add(id);
+
+                    }
+                );
+
+
+                const currentIds =
+                    new Set(
+                        inboxEmails.map(
+                            email =>
+                                String(email.id)
+                        )
+                    );
+
+
+                newEmailIds =
+                    new Set(
+                        [...newEmailIds]
+                            .filter(
+                                id =>
+                                    currentIds.has(
+                                        String(id)
+                                    )
+                            )
+                    );
+
+
+                newMailCount =
+                    newEmailIds.size;
+
+
+                /* =================================================
+                   KEEP ONLY VALID SCANS
+                ================================================= */
+
+                allResults =
+                    allResults.filter(
+                        result => {
+
+                            return (
+
+                                result &&
+
+                                result.id != null &&
+
+                                result.scanned === true &&
+
+                                (
+                                    result.is_spam === true ||
+                                    result.is_spam === false
+                                ) &&
+
+                                currentIds.has(
+                                    String(result.id)
+                                )
+
+                            );
+
+                        }
+                    );
+
+
+                /* =================================================
+                   MERGE SCANS
+                ================================================= */
+
+                mergeScansIntoInbox();
+
+
+                /* =================================================
+                   UI
+                ================================================= */
+
+                updateNewMailIndicator();
+
+                updateStatistics();
+
+                renderResults();
+
+                updateSectionCount();
+
+                persistDashboard();
+
+
+                initialInboxLoaded = true;
+
+
+                if (
+                    detectedNewIds.size > 0
+                ) {
+
+                    showNewMailToast(
+                        detectedNewIds.size
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Gmail refresh error:",
+                    error
+                );
+
+
+                if (
+                    firstLoad &&
+                    !inboxEmails.length
+                ) {
+
+                    const results =
+                        document.getElementById(
+                            "results"
+                        );
+
+
+                    if (results) {
+
+                        results.innerHTML = `
+
+                            <div class="empty">
+
+                                <i class="fa-solid fa-circle-exclamation"></i>
+
+                                <h3>
+                                    Unable to load Gmail
+                                </h3>
+
+                                <p>
+                                    ${escapeHtml(
+                                        error.message
+                                    )}
+                                </p>
+
+                            </div>
+
+                        `;
+
+                    }
+
+                }
+
+            } finally {
+
+                loadingInbox = false;
+
+                refreshingInbox = false;
+
+            }
+
+        }
+
+
+        /* =========================================================
+           ACCOUNT
+        ========================================================= */
+
+        function setAccount(account) {
+
+            const safe =
+                account ||
+                "Gmail";
+
+
+            const accountElement =
+                document.getElementById(
+                    "account"
+                );
+
+
+            const headerAccountElement =
+                document.getElementById(
+                    "headerAccount"
+                );
+
+
+            if (accountElement) {
+
+                accountElement.textContent =
+                    safe;
+
+            }
+
+
+            if (headerAccountElement) {
+
+                headerAccountElement.textContent =
+                    safe;
+
+            }
+
+
+            localStorage.setItem(
+                ACCOUNT_STORAGE_KEY,
+                safe
+            );
+
+        }
+
+
+        /* =========================================================
+           RESTORE CACHE
+        ========================================================= */
+
+        function restoreCachedDashboard() {
+
+            try {
+
+                const account =
+                    localStorage.getItem(
+                        ACCOUNT_STORAGE_KEY
+                    );
+
+
+                if (account) {
+
+                    setAccount(account);
+
+                }
+
+
+                const savedInbox =
+                    JSON.parse(
+                        localStorage.getItem(
+                            INBOX_STORAGE_KEY
+                        ) || "null"
+                    );
+
+
+                const savedScans =
+                    JSON.parse(
+                        localStorage.getItem(
+                            SCAN_STORAGE_KEY
+                        ) || "null"
+                    );
+
+
+                if (
+                    savedInbox &&
+                    Array.isArray(
+                        savedInbox.emails
+                    )
+                ) {
+
+                    inboxEmails =
+                        savedInbox.emails.map(
+                            email => {
+
+                                const scanned =
+                                    email.scanned === true &&
+                                    (
+                                        email.is_spam === true ||
+                                        email.is_spam === false
+                                    );
+
+
+                                if (scanned) {
+
+                                    return {
+
+                                        ...email,
+
+                                        scanned: true,
+
+                                        is_new: false
+
+                                    };
+
+                                }
+
+
+                                return {
+
+                                    ...email,
+
+                                    scanned: false,
+
+                                    is_spam: undefined,
+
+                                    confidence: undefined,
+
+                                    label: undefined,
+
+                                    model: undefined,
+
+                                    model_name: undefined,
+
+                                    model_accuracy: undefined,
+
+                                    is_new: false
+
+                                };
+
+                            }
+                        );
+
+                }
+
+
+                if (
+                    savedScans &&
+                    Array.isArray(
+                        savedScans.results
+                    )
+                ) {
+
+                    allResults =
+                        savedScans.results.filter(
+                            result => {
+
+                                return (
+
+                                    result &&
+
+                                    result.id != null &&
+
+                                    result.scanned === true &&
+
+                                    (
+                                        result.is_spam === true ||
+                                        result.is_spam === false
+                                    )
+
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                mergeScansIntoInbox();
+
+
+                newEmailIds =
+                    new Set();
+
+                newMailCount = 0;
+
+
+                updateNewMailIndicator();
+
+                updateStatistics();
+
+                renderResults();
+
+                updateSectionCount();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Cache restore error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           SAVE CACHE
+        ========================================================= */
+
+        function persistDashboard() {
+
+            try {
+
+                const account =
+                    document.getElementById(
+                        "account"
+                    )?.textContent ||
+                    "Gmail";
+
+
+                localStorage.setItem(
+                    ACCOUNT_STORAGE_KEY,
+                    account
+                );
+
+
+                localStorage.setItem(
+                    INBOX_STORAGE_KEY,
+                    JSON.stringify({
+                        email: account,
+                        emails: inboxEmails
+                    })
+                );
+
+
+                localStorage.setItem(
+                    SCAN_STORAGE_KEY,
+                    JSON.stringify({
+                        email: account,
+                        results: allResults
+                    })
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Cache save error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           CLEAR CACHE
+        ========================================================= */
+
+        function clearDashboardCache() {
+
+            try {
+
+                localStorage.removeItem(
+                    INBOX_STORAGE_KEY
+                );
+
+                localStorage.removeItem(
+                    SCAN_STORAGE_KEY
+                );
+
+                localStorage.removeItem(
+                    ACCOUNT_STORAGE_KEY
+                );
+
+
+                OLD_CACHE_KEYS.forEach(
+                    key => {
+
+                        localStorage.removeItem(
+                            key
+                        );
+
+                    }
+                );
+
+
+                sessionStorage.clear();
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not clear dashboard cache:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           MERGE SCANS
+        ========================================================= */
+
+        function mergeScansIntoInbox() {
+
+            const validResults =
+                allResults.filter(
+                    result => {
+
+                        return (
+
+                            result &&
+
+                            result.id != null &&
+
+                            result.scanned === true &&
+
+                            (
+                                result.is_spam === true ||
+                                result.is_spam === false
+                            )
+
+                        );
+
+                    }
+                );
+
+
+            const byId =
+                new Map(
+                    validResults.map(
+                        result => [
+                            String(result.id),
+                            result
+                        ]
+                    )
+                );
+
+
+            inboxEmails =
+                inboxEmails.map(
+                    email => {
+
+                        const result =
+                            byId.get(
+                                String(email.id)
+                            );
+
+
+                        /*
+                         * Scan exists.
+                         *
+                         * Keep Gmail location from
+                         * the current Gmail response.
+                         */
+
+                        if (
+                            result &&
+                            result.scanned === true &&
+                            (
+                                result.is_spam === true ||
+                                result.is_spam === false
+                            )
+                        ) {
+
+                            return {
+
+                                ...email,
+
+                                scanned: true,
+
+                                is_spam:
+                                    result.is_spam,
+
+                                confidence:
+                                    result.confidence,
+
+                                label:
+                                    result.label,
+
+                                model:
+                                    result.model,
+
+                                model_name:
+                                    result.model_name,
+
+                                model_accuracy:
+                                    result.model_accuracy
+
+                            };
+
+                        }
+
+
+                        /*
+                         * No valid SVM result.
+                         */
+
+                        return {
+
+                            ...email,
+
+                            scanned: false,
+
+                            is_spam: undefined,
+
+                            confidence: undefined,
+
+                            label: undefined,
+
+                            model: undefined,
+
+                            model_name: undefined,
+
+                            model_accuracy: undefined
+
+                        };
+
+                    }
+                );
+
+        }
+
+
+        /* =========================================================
+           FILTER
+        ========================================================= */
+
+        function setFilter(
+            filter,
+            button
+        ) {
+
+            currentFilter =
+                filter;
+
+
+            document
+                .querySelectorAll(
+                    ".filter-btn"
+                )
+                .forEach(
+                    btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+            if (button) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            renderResults();
+
+            updateSectionCount();
+
+        }
+
+
+        /* =========================================================
+           GET GMAIL MAILBOX
+        ========================================================= */
+
+        function getMailbox(email) {
+
+            const mailbox =
+                String(
+                    email?.mailbox ||
+                    ""
+                ).toLowerCase();
+
+
+            if (mailbox === "spam") {
+
+                return "spam";
+
+            }
+
+
+            if (mailbox === "inbox") {
+
+                return "inbox";
+
+            }
+
+
+            const label =
+                String(
+                    email?.gmail_label ||
+                    ""
+                ).toUpperCase();
+
+
+            if (label === "SPAM") {
+
+                return "spam";
+
+            }
+
+
+            if (label === "INBOX") {
+
+                return "inbox";
+
+            }
+
+
+            return "other";
+
+        }
+
+
+        /* =========================================================
+           FILTER EMAILS
+        ========================================================= */
+
+        function getFilteredEmails() {
+
+            if (
+                currentFilter === "gmail-inbox"
+            ) {
+
+                return inboxEmails.filter(
+                    email =>
+                        getMailbox(email) ===
+                        "inbox"
+                );
+
+            }
+
+
+            if (
+                currentFilter === "gmail-spam"
+            ) {
+
+                return inboxEmails.filter(
+                    email =>
+                        getMailbox(email) ===
+                        "spam"
+                );
+
+            }
+
+
+            if (
+                currentFilter === "spam"
+            ) {
+
+                return inboxEmails.filter(
+                    email =>
+
+                        email.scanned === true &&
+
+                        email.is_spam === true
+
+                );
+
+            }
+
+
+            if (
+                currentFilter === "safe"
+            ) {
+
+                return inboxEmails.filter(
+                    email =>
+
+                        email.scanned === true &&
+
+                        email.is_spam === false
+
+                );
+
+            }
+
+
+            return inboxEmails;
+
+        }
+
+
+        /* =========================================================
+           RENDER
+        ========================================================= */
+
+        function renderResults() {
+
+            const container =
+                document.getElementById(
+                    "results"
+                );
+
+
+            if (!container) {
+
+                return;
+
+            }
+
+
+            const filtered =
+                getFilteredEmails();
+
+
+            if (!filtered.length) {
+
+                container.innerHTML = `
+
+                    <div class="empty">
+
+                        <i class="fa-solid fa-envelope-open-text"></i>
+
+                        <h3>
+                            No emails found
+                        </h3>
+
+                        <p>
+                            No emails match the current filter.
+                        </p>
+
+                    </div>
+
+                `;
+
+                updateSectionCount();
+
+                return;
+
+            }
+
+
+            container.innerHTML = "";
+
+
+            filtered.forEach(
+                email => {
+
+                    /*
+                     * STRICT SVM CHECK.
+                     */
+
+                    const scanned =
+                        email.scanned === true &&
+                        (
+                            email.is_spam === true ||
+                            email.is_spam === false
+                        );
+
+
+                    let resultClass =
+                        "unscanned";
+
+
+                    let label =
+                        "NOT SCANNED";
+
+
+                    let confidence =
+                        "—";
+
+
+                    if (scanned) {
+
+                        resultClass =
+                            email.is_spam === true
+                                ? "spam"
+                                : "safe";
+
+
+                        label =
+                            email.is_spam === true
+                                ? "SPAM"
+                                : "SAFE";
+
+
+                        confidence =
+                            `${
+                                email.confidence ??
+                                0
+                            }% confidence`;
+
+                    }
+
+
+                    /*
+                     * Gmail physical location.
+                     */
+
+                    const mailbox =
+                        getMailbox(email);
+
+
+                    let mailboxLabel =
+                        "Other";
+
+
+                    let mailboxIcon =
+                        "fa-envelope";
+
+
+                    let mailboxClass =
+                        "other";
+
+
+                    if (
+                        mailbox === "inbox"
+                    ) {
+
+                        mailboxLabel =
+                            "Gmail Inbox";
+
+                        mailboxIcon =
+                            "fa-inbox";
+
+                        mailboxClass =
+                            "inbox";
+
+                    }
+
+
+                    if (
+                        mailbox === "spam"
+                    ) {
+
+                        mailboxLabel =
+                            "Gmail Spam";
+
+                        mailboxIcon =
+                            "fa-triangle-exclamation";
+
+                        mailboxClass =
+                            "spam";
+
+                    }
+
+
+                    /*
+                     * NEW.
+                     */
+
+                    const isNew =
+                        email.is_new === true;
+
+
+                    const newBadge =
+                        isNew
+                            ? `
+
+                                <span class="new-badge">
+                                    NEW
+                                </span>
+
+                            `
+                            : "";
+
+
+                    /*
+                     * SCAN.
+                     */
+
+                    const scanButton =
+                        scanned
+                            ? ""
+                            : `
+
+                                <button
+                                    class="action scan-one"
+                                    onclick="scanSingleEmail(
+                                        '${escapeJs(email.id)}',
+                                        this
+                                    )"
+                                >
+
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                                    Scan
+
+                                </button>
+
+                            `;
+
+
+                    /*
+                     * MOVE BUTTON.
+                     *
+                     * IMPORTANT:
+                     *
+                     * This is based ONLY on the
+                     * REAL Gmail mailbox.
+                     *
+                     * NOT on SVM prediction.
+                     */
+
+                    let moveButton = "";
+
+
+                    if (
+                        mailbox === "inbox"
+                    ) {
+
+                        moveButton = `
+
+                            <button
+                                class="action move-spam"
+                                onclick="moveToSpam(
+                                    '${escapeJs(email.id)}'
+                                )"
+                            >
+
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                                Move to Spam
+
+                            </button>
+
+                        `;
+
+                    }
+
+
+                    if (
+                        mailbox === "spam"
+                    ) {
+
+                        moveButton = `
+
+                            <button
+                                class="action move-safe"
+                                onclick="moveToSafe(
+                                    '${escapeJs(email.id)}'
+                                )"
+                            >
+
+                                <i class="fa-solid fa-shield"></i>
+
+                                Move to Safe
+
+                            </button>
+
+                        `;
+
+                    }
+
+
+                    /*
+                     * ROW.
+                     */
+
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    row.className =
+                        "email-row" +
+                        (
+                            isNew
+                                ? " new-email"
+                                : ""
+                        );
+
+
+                    row.innerHTML = `
+
+                        <div class="email-main">
+
+                            <div class="subject-line">
+
+                                <div class="subject">
+
+                                    ${escapeHtml(
+                                        email.subject ||
+                                        "(No Subject)"
+                                    )}
+
+                                </div>
+
+                                ${newBadge}
+
+                            </div>
+
+
+                            <div class="sender">
+
+                                ${escapeHtml(
+                                    email.sender ||
+                                    "Unknown Sender"
+                                )}
+
+                            </div>
+
+
+                            <div
+                                class="mailbox-badge ${mailboxClass}"
+                            >
+
+                                <i
+                                    class="fa-solid ${mailboxIcon}"
+                                ></i>
+
+                                ${mailboxLabel}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div
+                                class="result ${resultClass}"
+                            >
+                                ${label}
+                            </div>
+
+                        </div>
+
+
+                        <div class="confidence">
+
+                            ${confidence}
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            ${scanButton}
+
+
+                            <button
+                                class="action details"
+                                onclick="viewDetails(
+                                    '${escapeJs(email.id)}'
+                                )"
+                            >
+
+                                <i class="fa-solid fa-eye"></i>
+
+                                Details
+
+                            </button>
+
+
+                            ${moveButton}
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+
+            updateSectionCount();
+
+        }
+
+
+        /* =========================================================
+           SECTION COUNT
+        ========================================================= */
+
+        function updateSectionCount() {
+
+            const countElement =
+                document.getElementById(
+                    "sectionCount"
+                );
+
+
+            if (!countElement) {
+
+                return;
+
+            }
+
+
+            const filtered =
+                getFilteredEmails();
+
+
+            countElement.textContent =
+                filtered.length;
+
+        }
+
+
+        /* =========================================================
+           STATISTICS
+        ========================================================= */
+
+        function updateStatistics() {
+
+            const scanned =
+                inboxEmails.filter(
+                    email =>
+
+                        email.scanned === true &&
+
+                        (
+                            email.is_spam === true ||
+                            email.is_spam === false
+                        )
+                );
+
+
+            const total =
+                document.getElementById(
+                    "total"
+                );
+
+
+            const safe =
+                document.getElementById(
+                    "safe"
+                );
+
+
+            const spam =
+                document.getElementById(
+                    "spam"
+                );
+
+
+            if (total) {
+
+                total.textContent =
+                    scanned.length;
+
+            }
+
+
+            if (safe) {
+
+                safe.textContent =
+                    scanned.filter(
+                        email =>
+                            email.is_spam === false
+                    ).length;
+
+            }
+
+
+            if (spam) {
+
+                spam.textContent =
+                    scanned.filter(
+                        email =>
+                            email.is_spam === true
+                    ).length;
+
+            }
+
+        }
+
+
+        /* =========================================================
+           NEW MAIL INDICATOR
+        ========================================================= */
+
+        function updateNewMailIndicator() {
+
+            const dot =
+                document.getElementById(
+                    "newMailDot"
+                );
+
+
+            const count =
+                document.getElementById(
+                    "newMailCount"
+                );
+
+
+            const button =
+                document.getElementById(
+                    "newMailButton"
+                );
+
+
+            const buttonText =
+                document.getElementById(
+                    "newMailButtonText"
+                );
+
+
+            const banner =
+                document.getElementById(
+                    "newMailBanner"
+                );
+
+
+            const bannerCount =
+                document.getElementById(
+                    "newMailBannerCount"
+                );
+
+
+            if (
+                newMailCount > 0
+            ) {
+
+                if (dot) {
+
+                    dot.classList.add(
+                        "show"
+                    );
+
+                }
+
+
+                if (count) {
+
+                    count.textContent =
+                        newMailCount > 99
+                            ? "99+"
+                            : newMailCount;
+
+                    count.classList.add(
+                        "show"
+                    );
+
+                }
+
+
+                if (button) {
+
+                    button.classList.add(
+                        "show"
+                    );
+
+                }
+
+
+                if (buttonText) {
+
+                    buttonText.textContent =
+                        newMailCount === 1
+                            ? "1 new mail"
+                            : `${newMailCount} new mails`;
+
+                }
+
+
+                if (banner) {
+
+                    banner.classList.add(
+                        "show"
+                    );
+
+                }
+
+
+                if (bannerCount) {
+
+                    bannerCount.textContent =
+                        newMailCount;
+
+                }
+
+            } else {
+
+                if (dot) {
+
+                    dot.classList.remove(
+                        "show"
+                    );
+
+                }
+
+
+                if (count) {
+
+                    count.classList.remove(
+                        "show"
+                    );
+
+                }
+
+
+                if (button) {
+
+                    button.classList.remove(
+                        "show"
+                    );
+
+                }
+
+
+                if (banner) {
+
+                    banner.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================================================
+           SHOW NEW EMAILS
+        ========================================================= */
+
+        function showNewEmails() {
+
+            currentFilter = "all";
+
+
+            document
+                .querySelectorAll(
+                    ".filter-btn"
+                )
+                .forEach(
+                    btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+            const allButton =
+                document.querySelector(
+                    ".filter-btn"
+                );
+
+
+            if (allButton) {
+
+                allButton.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            newEmailIds.forEach(
+                id => {
+
+                    const email =
+                        inboxEmails.find(
+                            item =>
+                                String(item.id) ===
+                                String(id)
+                        );
+
+
+                    if (email) {
+
+                        email.is_new = false;
+
+                    }
+
+                }
+            );
+
+
+            newEmailIds.clear();
+
+            newMailCount = 0;
+
+
+            updateNewMailIndicator();
+
+            renderResults();
+
+            persistDashboard();
+
+
+            const section =
+                document.querySelector(
+                    ".email-section"
+                );
+
+
+            if (section) {
+
+                section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
+        }
+
+
+        /* =========================================================
+           SCAN ALL
+        ========================================================= */
+
+        async function scanGmail() {
+
+            if (scanningAll) {
+
+                return;
+
+            }
+
+
+            scanningAll = true;
+
+
+            const button =
+                document.getElementById(
+                    "scanAllButton"
+                );
+
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+
+            if (button) {
+
+                button.disabled = true;
+
+                button.innerHTML = `
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    Scanning...
+
+                `;
+
+            }
+
+
+            if (loading) {
+
+                loading.style.display =
+                    "block";
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/scan-gmail?model=linear_svm",
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to scan Gmail."
+                    );
+
+                }
+
+
+                setAccount(
+                    data.email ||
+                    "Gmail"
+                );
+
+
+                /*
+                 * Only valid SVM classifications.
+                 */
+
+                allResults =
+                    (data.results || [])
+
+                        .filter(
+                            result => {
+
+                                return (
+
+                                    result &&
+
+                                    result.id != null &&
+
+                                    (
+                                        result.is_spam === true ||
+                                        result.is_spam === false
+                                    )
+
+                                );
+
+                            }
+                        )
+
+                        .map(
+                            result => ({
+
+                                ...result,
+
+                                model:
+                                    "linear_svm",
+
+                                model_name:
+                                    "Linear SVM",
+
+                                model_accuracy:
+                                    data.model_accuracy ??
+                                    97.93,
+
+                                scanned:
+                                    true
+
+                            })
+                        );
+
+
+                /*
+                 * Merge predictions into
+                 * the latest Gmail records.
+                 */
+
+                mergeScansIntoInbox();
+
+
+                inboxEmails.forEach(
+                    email => {
+
+                        email.is_new = false;
+
+                    }
+                );
+
+
+                newEmailIds.clear();
+
+                newMailCount = 0;
+
+
+                updateNewMailIndicator();
+
+                updateStatistics();
+
+                renderResults();
+
+                updateSectionCount();
+
+                persistDashboard();
+
+
+                showToast(
+                    `Scan complete: ${
+                        data.total ??
+                        allResults.length
+                    } emails classified.`
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Scan Gmail error:",
+                    error
+                );
+
+
+                showToast(
+                    "Scan failed: " +
+                    error.message
+                );
+
+
+            } finally {
+
+                scanningAll = false;
+
+
+                if (button) {
+
+                    button.disabled = false;
+
+                    button.innerHTML = `
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        Scan All Mails
+
+                    `;
+
+                }
+
+
+                if (loading) {
+
+                    loading.style.display =
+                        "none";
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================================================
+           SCAN SINGLE EMAIL
+        ========================================================= */
+
+        async function scanSingleEmail(
+            id,
+            button
+        ) {
+
+            if (button) {
+
+                button.disabled = true;
+
+                button.innerHTML = `
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    Scanning
+
+                `;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/scan-email/" +
+                        encodeURIComponent(id) +
+                        "?model=linear_svm",
+                        {
+                            method: "POST",
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success ||
+                    !data.result
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to scan email."
+                    );
+
+                }
+
+
+                const apiResult =
+                    data.result;
+
+
+                if (
+                    apiResult.is_spam !== true &&
+                    apiResult.is_spam !== false
+                ) {
+
+                    throw new Error(
+                        "The scan did not return a valid classification."
+                    );
+
+                }
+
+
+                const existingEmail =
+                    inboxEmails.find(
+                        email =>
+                            String(email.id) ===
+                            String(id)
+                    );
+
+
+                const result = {
+
+                    ...apiResult,
+
+                    /*
+                     * Preserve real Gmail location
+                     * from the dashboard record if
+                     * the API does not provide it.
+                     */
+
+                    mailbox:
+                        apiResult.mailbox ??
+                        existingEmail?.mailbox,
+
+                    gmail_label:
+                        apiResult.gmail_label ??
+                        existingEmail?.gmail_label,
+
+                    is_gmail_spam:
+                        apiResult.is_gmail_spam ??
+                        existingEmail?.is_gmail_spam,
+
+                    model:
+                        "linear_svm",
+
+                    model_name:
+                        "Linear SVM",
+
+                    model_accuracy:
+                        apiResult.model_accuracy ??
+                        97.93,
+
+                    scanned:
+                        true
+
+                };
+
+
+                const index =
+                    allResults.findIndex(
+                        item =>
+                            String(item.id) ===
+                            String(id)
+                    );
+
+
+                if (index >= 0) {
+
+                    allResults[index] =
+                        result;
+
+                } else {
+
+                    allResults.push(
+                        result
+                    );
+
+                }
+
+
+                if (existingEmail) {
+
+                    existingEmail.is_new = false;
+
+                }
+
+
+                newEmailIds.delete(
+                    String(id)
+                );
+
+
+                newMailCount =
+                    newEmailIds.size;
+
+
+                mergeScansIntoInbox();
+
+                updateNewMailIndicator();
+
+                updateStatistics();
+
+                renderResults();
+
+                updateSectionCount();
+
+                persistDashboard();
+
+
+                const resultLabel =
+                    result.is_spam === true
+                        ? "SPAM"
+                        : "SAFE";
+
+
+                showToast(
+                    `${resultLabel} — ${
+                        result.confidence ?? 0
+                    }% confidence`
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Single scan error:",
+                    error
+                );
+
+
+                showToast(
+                    "Scan failed: " +
+                    error.message
+                );
+
+
+            } finally {
+
+                if (button) {
+
+                    button.disabled = false;
+
+                    button.innerHTML = `
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        Scan
+
+                    `;
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================================================
+           VIEW DETAILS
+        ========================================================= */
+
+        function viewDetails(id) {
+
+            const email =
+                inboxEmails.find(
+                    item =>
+                        String(item.id) ===
+                        String(id)
+                );
+
+
+            if (!email) {
+
+                showToast(
+                    "Email could not be found."
+                );
+
+                return;
+
+            }
+
+
+            const params =
+                new URLSearchParams();
+
+
+            const scanned =
+                email.scanned === true &&
+                (
+                    email.is_spam === true ||
+                    email.is_spam === false
+                );
+
+
+            params.set(
+                "scanned",
+                scanned
+                    ? "1"
+                    : "0"
+            );
+
+
+            if (scanned) {
+
+                params.set(
+                    "is_spam",
+                    email.is_spam === true
+                        ? "1"
+                        : "0"
+                );
+
+
+                params.set(
+                    "confidence",
+                    email.confidence ?? "0"
+                );
+
+            }
+
+
+            location.href =
+                "/email-details/" +
+                encodeURIComponent(id) +
+                "?" +
+                params.toString();
+
+        }
+
+
+        /* =========================================================
+           MOVE TO SPAM
+        ========================================================= */
+
+        async function moveToSpam(id) {
+
+            await moveEmail(
+                id,
+                "/move-to-spam/",
+                "Email moved to Gmail Spam."
+            );
+
+        }
+
+
+        /* =========================================================
+           MOVE TO SAFE
+        ========================================================= */
+
+        async function moveToSafe(id) {
+
+            await moveEmail(
+                id,
+                "/move-to-safe/",
+                "Email moved to Gmail Inbox."
+            );
+
+        }
+
+
+        /* =========================================================
+           MOVE EMAIL
+        ========================================================= */
+
+        async function moveEmail(
+            id,
+            url,
+            successMessage
+        ) {
+
+            const email =
+                inboxEmails.find(
+                    item =>
+                        String(item.id) ===
+                        String(id)
+                );
+
+
+            if (!email) {
+
+                showToast(
+                    "Email could not be found."
+                );
+
+                return;
+
+            }
+
+
+            const mailbox =
+                getMailbox(email);
+
+
+            /*
+             * Safety check.
+             *
+             * Prevent the wrong action from
+             * being sent because of stale UI.
+             */
+
+            if (
+                url.includes("/move-to-spam/") &&
+                mailbox !== "inbox"
+            ) {
+
+                showToast(
+                    "This email is no longer in Gmail Inbox."
+                );
+
+                await ensureGmailInboxLoaded(false);
+
+                return;
+
+            }
+
+
+            if (
+                url.includes("/move-to-safe/") &&
+                mailbox !== "spam"
+            ) {
+
+                showToast(
+                    "This email is no longer in Gmail Spam."
+                );
+
+                await ensureGmailInboxLoaded(false);
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        url +
+                        encodeURIComponent(id),
+                        {
+                            method: "POST",
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to move email."
+                    );
+
+                }
+
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * The backend has already changed
+                 * the REAL Gmail message.
+                 *
+                 * Update local mailbox immediately.
+                 *
+                 * Do NOT change the SVM result.
+                 */
+
+                const updatedEmail =
+                    inboxEmails.find(
+                        item =>
+                            String(item.id) ===
+                            String(id)
+                    );
+
+
+                if (updatedEmail) {
+
+                    if (
+                        data.mailbox === "spam"
+                    ) {
+
+                        updatedEmail.mailbox =
+                            "spam";
+
+                        updatedEmail.gmail_label =
+                            "SPAM";
+
+                        updatedEmail.is_gmail_spam =
+                            true;
+
+                    } else if (
+                        data.mailbox === "inbox"
+                    ) {
+
+                        updatedEmail.mailbox =
+                            "inbox";
+
+                        updatedEmail.gmail_label =
+                            "INBOX";
+
+                        updatedEmail.is_gmail_spam =
+                            false;
+
+                    }
+
+                }
+
+
+                /*
+                 * Keep scan result.
+                 *
+                 * We intentionally DO NOT remove
+                 * allResults because the SVM result
+                 * still belongs to this message.
+                 */
+
+
+                newEmailIds.delete(
+                    String(id)
+                );
+
+
+                if (updatedEmail) {
+
+                    updatedEmail.is_new = false;
+
+                }
+
+
+                newMailCount =
+                    newEmailIds.size;
+
+
+                updateNewMailIndicator();
+
+                updateStatistics();
+
+                renderResults();
+
+                updateSectionCount();
+
+                persistDashboard();
+
+
+                showToast(
+                    successMessage
+                );
+
+
+                /*
+                 * Verify the real Gmail state
+                 * shortly after the operation.
+                 */
+
+                setTimeout(
+                    async () => {
+
+                        if (!scanningAll) {
+
+                            await ensureGmailInboxLoaded(
+                                false
+                            );
+
+                        }
+
+                    },
+                    700
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Move email error:",
+                    error
+                );
+
+
+                showToast(
+                    "Move failed: " +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           NEW MAIL TOAST
+        ========================================================= */
+
+        function showNewMailToast(
+            count
+        ) {
+
+            const message =
+                count === 1
+                    ? "New email received."
+                    : `${count} new emails received.`;
+
+
+            showToast(
+                message,
+                true
+            );
+
+        }
+
+
+        /* =========================================================
+           TOAST
+        ========================================================= */
+
+        function showToast(
+            message,
+            isNewMail = false
+        ) {
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+
+            if (!toast) {
+
+                return;
+
+            }
+
+
+            toast.textContent =
+                message;
+
+
+            toast.classList.toggle(
+                "new-toast",
+                isNewMail
+            );
+
+
+            toast.style.display =
+                "block";
+
+
+            clearTimeout(
+                window.__toastTimer
+            );
+
+
+            window.__toastTimer =
+                setTimeout(
+                    () => {
+
+                        toast.style.display =
+                            "none";
+
+                    },
+                    3500
+                );
+
+        }
+
+
+        /* =========================================================
+           ESCAPE HTML
+        ========================================================= */
+
+        function escapeHtml(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        /* =========================================================
+           ESCAPE JAVASCRIPT
+        ========================================================= */
+
+        function escapeJs(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+
+                .replace(
+                    /\\/g,
+                    "\\\\"
+                )
+
+                .replace(
+                    /'/g,
+                    "\\'"
+                )
+
+                .replace(
+                    /"/g,
+                    '\\"'
+                )
+
+                .replace(
+                    /\r?\n/g,
+                    "\\n"
+                );
+
+        }
+
+    </script>
+
+</body>
+</html>

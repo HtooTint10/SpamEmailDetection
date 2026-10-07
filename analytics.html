@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear SVM Analytics - SpamGuard AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f6f8ff;font-family:'Segoe UI',Arial,sans-serif;color:#17213c}
+.header{height:74px;background:#fff;border-bottom:1px solid #e5e9f2;display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700}.logo-icon{width:36px;height:36px;border-radius:9px;background:#eef2ff;color:#3155ed;display:flex;align-items:center;justify-content:center}.blue{color:#3155ed}
+.header-right{display:flex;gap:12px;align-items:center}.account{background:#f5f7ff;border:1px solid #e0e5f2;border-radius:9px;padding:9px 13px;font-size:13px;font-weight:600}.logout{border:1px solid #ffd7d7;background:#fff5f5;color:#dc3545;padding:10px 14px;border-radius:9px;font-weight:600}
+.page{max-width:1100px;margin:auto;padding:40px 5%}.title h1{margin:0 0 8px;font-size:30px}.title p{margin:0;color:#68738a}
+.card{margin-top:25px;background:#fff;border:1px solid #e5e9f2;border-radius:16px;padding:28px;box-shadow:0 5px 20px rgba(30,40,100,.04)}
+.model-head{display:flex;justify-content:space-between;gap:20px;align-items:center}.model-name{font-size:22px;font-weight:800}.badge{background:#eef2ff;color:#3155ed;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:24px}.metric{padding:18px;background:#f8faff;border:1px solid #e8ebf3;border-radius:12px}.metric small{display:block;color:#788298;margin-bottom:8px}.metric strong{font-size:25px}
+.back{display:inline-flex;margin-top:20px;padding:11px 15px;border-radius:9px;background:#3155ed;color:#fff;font-weight:600}
+@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.model-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="header">
+<a href="/dashboard" class="logo"><span class="logo-icon"><i class="fa-solid fa-shield-halved"></i></span><span>Spam<span class="blue">Email</span> Detection</span></a>
+<div class="header-right"><span class="account" id="account">Loading account...</span><a class="logout" href="/logout">Logout</a></div>
+</header>
+<main class="page">
+<div class="title"><h1>Model Analytics</h1><p>This system uses one classifier only: Linear SVM with TF-IDF features.</p></div>
+<section class="card">
+<div class="model-head"><div><div class="model-name">Linear SVM</div><div style="color:#68738a;margin-top:5px">Production spam-email classifier</div></div><span class="badge"><i class="fa-solid fa-microchip"></i> ACTIVE MODEL</span></div>
+<div class="grid">
+<div class="metric"><small>Accuracy</small><strong id="accuracy">97.93%</strong></div>
+<div class="metric"><small>Precision</small><strong id="precision">—</strong></div>
+<div class="metric"><small>Recall</small><strong id="recall">—</strong></div>
+<div class="metric"><small>F1 Score</small><strong id="f1">—</strong></div>
+</div>
+<a class="back" href="/dashboard"><i class="fa-solid fa-arrow-left"></i>&nbsp; Back to Dashboard</a>
+</section>
+</main>
+<script>
+(async()=>{
+ try{
+  const account=await fetch("/gmail-account",{cache:"no-store"}).then(r=>r.json());
+  if(account.success)document.getElementById("account").textContent=account.email;
+  const data=await fetch("/model-info",{cache:"no-store"}).then(r=>r.json());
+  const m=data.models?.[0];
+  if(m){
+   document.getElementById("accuracy").textContent=(m.accuracy??97.93).toFixed(2)+"%";
+   document.getElementById("precision").textContent=m.precision?m.precision.toFixed(2)+"%":"—";
+   document.getElementById("recall").textContent=m.recall?m.recall.toFixed(2)+"%":"—";
+   document.getElementById("f1").textContent=m.f1_score?m.f1_score.toFixed(2)+"%":"—";
+  }
+ }catch(e){console.error(e)}
+})();
+</script>
+</body>
+</html>

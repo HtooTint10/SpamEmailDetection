@@ -1,0 +1,1251 @@
+
+/* =========================================================
+   SPAMGUARD AI
+   CONNECT GMAIL PAGE
+   MATCHED WITH HOMEPAGE DESIGN
+========================================================= */
+
+
+/* =========================================================
+   PAGE RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+
+    font-family: "Inter", sans-serif;
+
+    color: #eef2ff;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(124, 58, 237, 0.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(59, 130, 246, 0.08),
+            transparent 30%
+        ),
+        #070914;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND ATMOSPHERE
+========================================================= */
+
+body::before {
+    content: "";
+
+    position: fixed;
+    z-index: -3;
+
+    width: 430px;
+    height: 430px;
+
+    top: -180px;
+    left: -150px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(124, 58, 237, 0.22),
+            transparent 70%
+        );
+
+    filter: blur(30px);
+
+    animation: backgroundFloatOne 10s ease-in-out infinite alternate;
+}
+
+
+body::after {
+    content: "";
+
+    position: fixed;
+    z-index: -3;
+
+    width: 400px;
+    height: 400px;
+
+    right: -180px;
+    bottom: -120px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(59, 130, 246, 0.13),
+            transparent 70%
+        );
+
+    filter: blur(35px);
+
+    animation: backgroundFloatTwo 12s ease-in-out infinite alternate;
+}
+
+
+@keyframes backgroundFloatOne {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(45px, 35px) scale(1.08);
+    }
+}
+
+
+@keyframes backgroundFloatTwo {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(-40px, -30px) scale(1.08);
+    }
+}
+
+
+/* =========================================================
+   SUBTLE GRID
+========================================================= */
+
+.connect-page {
+    position: relative;
+    min-height: 100vh;
+
+    padding:
+        125px
+        24px
+        70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.connect-page::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    z-index: -2;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.022) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.022) 1px,
+            transparent 1px
+        );
+
+    background-size: 50px 50px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            rgba(0, 0, 0, 0.65),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar {
+    position: fixed;
+
+    top: 16px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(1180px, calc(100% - 48px));
+    height: 68px;
+
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    z-index: 1000;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 18px;
+
+    background:
+        rgba(11, 14, 29, 0.78);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.30),
+        inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: -0.025em;
+}
+
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 8px 25px rgba(124, 58, 237, 0.35);
+
+    animation: logoPulse 4s ease-in-out infinite;
+}
+
+
+.logo-icon i {
+    font-size: 16px;
+}
+
+
+.logo > span {
+    color: #ffffff;
+}
+
+
+.logo .blue {
+    color: #a78bfa;
+}
+
+
+@keyframes logoPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+
+        box-shadow:
+            0 8px 25px rgba(124, 58, 237, 0.30);
+    }
+
+    50% {
+        transform: scale(1.05);
+
+        box-shadow:
+            0 10px 32px rgba(124, 58, 237, 0.48);
+    }
+}
+
+
+/* =========================================================
+   BACK HOME BUTTON
+========================================================= */
+
+.back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 11px 16px;
+
+    color: #aeb5c8;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border:
+        1px solid rgba(139, 92, 246, 0.20);
+
+    border-radius: 11px;
+
+    background:
+        rgba(124, 58, 237, 0.07);
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.back-home:hover {
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(139, 92, 246, 0.42);
+
+    background:
+        rgba(124, 58, 237, 0.14);
+
+    box-shadow:
+        0 10px 28px rgba(124, 58, 237, 0.14);
+}
+
+
+.back-home i {
+    color: #9f7aea;
+
+    font-size: 11px;
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.back-home:hover i {
+    transform: translateX(-3px);
+}
+
+
+/* =========================================================
+   MAIN CONNECT CARD
+========================================================= */
+
+.connect-card {
+    position: relative;
+
+    width: min(1050px, 100%);
+
+    min-height: 600px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        0.9fr;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(139, 92, 246, 0.16);
+
+    border-radius: 28px;
+
+    background:
+        radial-gradient(
+            circle at 85% 45%,
+            rgba(124, 58, 237, 0.12),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(20, 24, 45, 0.92),
+            rgba(9, 12, 25, 0.96)
+        );
+
+    box-shadow:
+        0 35px 90px rgba(0, 0, 0, 0.38),
+        inset 0 1px rgba(255, 255, 255, 0.045);
+
+    animation:
+        connectCardIn
+        0.85s
+        ease
+        both;
+}
+
+
+@keyframes connectCardIn {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(28px)
+            scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   CARD DECORATION
+========================================================= */
+
+.connect-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(139, 92, 246, 0.75),
+            rgba(99, 102, 241, 0.45),
+            transparent
+        );
+}
+
+
+.connect-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 430px;
+    height: 430px;
+
+    right: -170px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(124, 58, 237, 0.15),
+            transparent 68%
+        );
+
+    filter: blur(8px);
+
+    pointer-events: none;
+
+    animation:
+        connectGlow
+        6s
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes connectGlow {
+
+    0%,
+    100% {
+        opacity: 0.55;
+        transform:
+            translateY(-50%)
+            scale(0.94);
+    }
+
+    50% {
+        opacity: 1;
+        transform:
+            translateY(-50%)
+            scale(1.08);
+    }
+}
+
+
+/* =========================================================
+   LEFT SIDE
+========================================================= */
+
+.connect-info {
+    position: relative;
+    z-index: 3;
+
+    padding: 62px 55px 55px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-right:
+        1px solid rgba(255, 255, 255, 0.055);
+}
+
+
+/* =========================================================
+   SECURITY BADGE
+========================================================= */
+
+.connect-badge {
+    width: fit-content;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 22px;
+    padding: 8px 12px;
+
+    color: #aeb5c8;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.06em;
+
+    border:
+        1px solid rgba(139, 92, 246, 0.22);
+
+    border-radius: 100px;
+
+    background:
+        rgba(124, 58, 237, 0.08);
+
+    animation:
+        badgeFloat
+        4s
+        ease-in-out
+        infinite;
+}
+
+
+.connect-badge i {
+    color: #a78bfa;
+
+    font-size: 10px;
+}
+
+
+@keyframes badgeFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.connect-info h1 {
+    max-width: 510px;
+
+    margin: 0;
+
+    color: #f6f7ff;
+
+    font-size:
+        clamp(
+            38px,
+            4.5vw,
+            58px
+        );
+
+    line-height: 1.04;
+
+    font-weight: 800;
+
+    letter-spacing: -0.055em;
+}
+
+
+.connect-info h1 span {
+    display: block;
+
+    color: #a78bfa;
+
+    background:
+        linear-gradient(
+            90deg,
+            #a78bfa,
+            #8b5cf6,
+            #6366f1
+        );
+
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        headingGradient
+        5s
+        linear
+        infinite;
+}
+
+
+@keyframes headingGradient {
+
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+.connect-info .intro {
+    max-width: 520px;
+
+    margin-top: 19px;
+
+    color: #7e879c;
+
+    font-size: 12px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   SECURITY LIST
+========================================================= */
+
+.security-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    margin-top: 30px;
+}
+
+
+.security-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+
+    padding: 14px 15px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.045);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 255, 255, 0.018);
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        background 0.3s ease;
+}
+
+
+.security-item:hover {
+    transform: translateX(5px);
+
+    border-color:
+        rgba(139, 92, 246, 0.18);
+
+    background:
+        rgba(124, 58, 237, 0.045);
+}
+
+
+.security-item-icon {
+    width: 37px;
+    height: 37px;
+
+    flex: 0 0 37px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #a78bfa;
+
+    border-radius: 10px;
+
+    background:
+        rgba(139, 92, 246, 0.09);
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease;
+}
+
+
+.security-item:hover .security-item-icon {
+    transform: scale(1.08) rotate(-4deg);
+
+    background:
+        rgba(139, 92, 246, 0.15);
+}
+
+
+.security-item-icon i {
+    font-size: 13px;
+}
+
+
+.security-item strong {
+    display: block;
+
+    color: #e2e6f2;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.security-item p {
+    margin-top: 5px;
+
+    color: #6f788d;
+
+    font-size: 9px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   RIGHT GOOGLE CONNECT
+========================================================= */
+
+.google-connect {
+    position: relative;
+    z-index: 3;
+
+    padding: 55px 45px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   GOOGLE LOGO
+========================================================= */
+
+.google-logo {
+    width: 82px;
+    height: 82px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border:
+        1px solid rgba(139, 92, 246, 0.22);
+
+    border-radius: 25px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(124, 58, 237, 0.16),
+            rgba(13, 17, 34, 0.92)
+        );
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.28),
+        0 0 30px rgba(124, 58, 237, 0.08);
+
+    animation:
+        googleLogoFloat
+        4.5s
+        ease-in-out
+        infinite;
+}
+
+
+.google-logo span {
+    font-size: 39px;
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a78bfa,
+            #6366f1
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+
+@keyframes googleLogoFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+
+/* =========================================================
+   GOOGLE HEADING
+========================================================= */
+
+.google-connect h2 {
+    margin: 0;
+
+    color: #f2f4fb;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    letter-spacing: -0.025em;
+}
+
+
+.google-connect > p {
+    max-width: 330px;
+
+    margin-top: 10px;
+
+    color: #777f94;
+
+    font-size: 10px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   GOOGLE LOGIN BUTTON
+========================================================= */
+
+.google-login-btn {
+    width: 100%;
+    max-width: 350px;
+    min-height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    margin-top: 25px;
+    padding: 0 17px;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    border:
+        1px solid rgba(167, 139, 250, 0.38);
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #5b4ce1
+        );
+
+    box-shadow:
+        0 12px 32px rgba(91, 76, 225, 0.24);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        filter 0.25s ease;
+}
+
+
+.google-login-btn:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 18px 42px rgba(91, 76, 225, 0.38);
+
+    filter: brightness(1.08);
+}
+
+
+.google-login-btn:active {
+    transform: translateY(-1px);
+}
+
+
+.google-login-btn .google-g {
+    width: 25px;
+    height: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    background:
+        rgba(255, 255, 255, 0.13);
+}
+
+
+.google-login-btn i {
+    margin-left: auto;
+
+    color: rgba(255, 255, 255, 0.75);
+
+    font-size: 11px;
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.google-login-btn:hover i {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   PERMISSION TITLE
+========================================================= */
+
+.permission-title {
+    width: 100%;
+    max-width: 350px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin-top: 25px;
+
+    color: #9098ad;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-align: left;
+}
+
+
+.permission-title i {
+    color: #8b5cf6;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   PERMISSION BOX
+========================================================= */
+
+.permission-box {
+    width: 100%;
+    max-width: 350px;
+
+    margin-top: 10px;
+    padding: 13px 14px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.018);
+}
+
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 8px 0;
+
+    color: #777f94;
+
+    font-size: 9px;
+
+    text-align: left;
+}
+
+
+.permission-item + .permission-item {
+    border-top:
+        1px solid rgba(255, 255, 255, 0.035);
+}
+
+
+.permission-item i {
+    width: 18px;
+
+    color: #8b5cf6;
+
+    font-size: 10px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .connect-card {
+        grid-template-columns: 1fr;
+
+        max-width: 650px;
+    }
+
+
+    .connect-info {
+        border-right: none;
+
+        border-bottom:
+            1px solid rgba(255, 255, 255, 0.055);
+
+        padding: 50px 45px;
+    }
+
+
+    .google-connect {
+        padding: 50px 45px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .navbar {
+        width: calc(100% - 28px);
+
+        height: 62px;
+
+        padding: 0 14px;
+
+        border-radius: 15px;
+    }
+
+
+    .logo {
+        font-size: 13px;
+    }
+
+
+    .logo-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    .back-home {
+        padding: 9px 11px;
+
+        font-size: 10px;
+    }
+
+
+    .connect-page {
+        padding:
+            105px
+            14px
+            45px;
+    }
+
+
+    .connect-card {
+        border-radius: 22px;
+    }
+
+
+    .connect-info {
+        padding: 40px 25px;
+    }
+
+
+    .connect-info h1 {
+        font-size: 39px;
+    }
+
+
+    .connect-info .intro {
+        font-size: 11px;
+    }
+
+
+    .security-list {
+        gap: 11px;
+    }
+
+
+    .security-item {
+        padding: 12px;
+    }
+
+
+    .google-connect {
+        padding: 40px 25px;
+    }
+
+
+    .google-login-btn {
+        max-width: 100%;
+    }
+
+
+    .permission-title,
+    .permission-box {
+        max-width: 100%;
+    }
+}
+
+
+@media (max-width: 430px) {
+
+    .navbar {
+        width: calc(100% - 18px);
+    }
+
+
+    .logo > span {
+        font-size: 11px;
+    }
+
+
+    .back-home {
+        padding: 8px 9px;
+
+        font-size: 9px;
+    }
+
+
+    .connect-info h1 {
+        font-size: 35px;
+    }
+
+
+    .connect-badge {
+        font-size: 8px;
+    }
+
+
+    .google-logo {
+        width: 72px;
+        height: 72px;
+
+        border-radius: 21px;
+    }
+
+
+    .google-logo span {
+        font-size: 34px;
+    }
+
+
+    .google-connect h2 {
+        font-size: 20px;
+    }
+
+
+    .connect-info {
+        padding: 35px 20px;
+    }
+
+
+    .google-connect {
+        padding: 35px 20px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
