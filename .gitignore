@@ -1,6 +1,5 @@
 credentials.json
 *.csv
-*.pkl
 pycache/
 .env
 venv/
