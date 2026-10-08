@@ -1086,7 +1086,6 @@
             grid-template-columns:
                 minmax(240px, 1fr)
                 115px
-                140px
                 330px;
 
             gap: 17px;
@@ -1256,14 +1255,6 @@
             border:
                 1px solid
                 rgba(255,255,255,.06);
-        }
-
-        .confidence {
-            color: #7d87a1;
-
-            font-size: 11px;
-
-            text-align: center;
         }
 
         /* =========================================================
@@ -1503,7 +1494,6 @@
                 grid-template-columns:
                     minmax(190px, 1fr)
                     100px
-                    120px
                     270px;
             }
 
@@ -1516,10 +1506,6 @@
                     minmax(180px, 1fr)
                     100px
                     240px;
-            }
-
-            .confidence {
-                display: none;
             }
 
         }
@@ -1558,11 +1544,6 @@
 
             .result {
                 margin: 0;
-            }
-
-            .confidence {
-                display: block;
-                text-align: left;
             }
 
             .actions {
@@ -1887,22 +1868,21 @@
                 </button>
 
 
-                <button
-                    class="filter-btn"
-                    onclick="setFilter('spam', this)"
-                >
-                    <i class="fa-solid fa-shield-virus"></i>
-                    Safe Emails
-                </button>
+               <button
+    class="filter-btn"
+    onclick="setFilter('safe', this)"
+>
+    <i class="fa-solid fa-circle-check"></i>
+    Spam Detected
+</button>
 
-
-                <button
-                    class="filter-btn"
-                    onclick="setFilter('safe', this)"
-                >
-                    <i class="fa-solid fa-circle-check"></i>
-                    Spam Detected
-                </button>
+<button
+    class="filter-btn"
+    onclick="setFilter('spam', this)"
+>
+    <i class="fa-solid fa-shield-virus"></i>
+    Safe Emails
+</button>
 
             </div>
 
@@ -1960,7 +1940,7 @@
 
             <i class="fa-solid fa-spinner fa-spin"></i>
 
-            Scanning Gmail with Linear SVM...
+            Scanning Gmail...
 
         </div>
 
@@ -3581,13 +3561,6 @@
                             >
                                 ${label}
                             </div>
-
-                        </div>
-
-
-                        <div class="confidence">
-
-                            ${confidence}
 
                         </div>
 

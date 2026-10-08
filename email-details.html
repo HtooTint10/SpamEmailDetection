@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Email Details - SpamGuard AI</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Email Details - SpamGuard AI
+    </title>
 
     <link
         rel="stylesheet"
@@ -12,957 +20,2199 @@
     >
 
     <style>
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+
+        /* =========================================================
+           BODY
+        ========================================================= */
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
+
             min-height: 100vh;
-            color: #f5f7ff;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #f4f6ff;
+
             background:
-                radial-gradient(circle at top left, rgba(91, 95, 255, 0.18), transparent 35%),
-                radial-gradient(circle at bottom right, rgba(0, 212, 255, 0.12), transparent 35%),
-                #070b16;
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(49, 85, 237, .16),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 15%,
+                    rgba(113, 60, 241, .14),
+                    transparent 30%
+                ),
+                #070914;
+
+            overflow-x: hidden;
         }
 
-        .navbar {
-            height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 35px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            background: rgba(8, 12, 25, 0.82);
-            backdrop-filter: blur(18px);
+
+        /* =========================================================
+           AMBIENT BACKGROUND
+        ========================================================= */
+
+        .ambient {
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            overflow: hidden;
+
+            z-index: 0;
         }
+
+        .blob {
+
+            position: absolute;
+
+            width: 380px;
+
+            height: 380px;
+
+            border-radius: 50%;
+
+            filter: blur(100px);
+
+            opacity: .18;
+        }
+
+        .blob.one {
+
+            top: -180px;
+
+            left: -120px;
+
+            background: #3155ed;
+        }
+
+        .blob.two {
+
+            right: -150px;
+
+            top: 100px;
+
+            background: #713cf1;
+        }
+
+        .blob.three {
+
+            left: 35%;
+
+            bottom: -260px;
+
+            background: #3155ed;
+        }
+
+
+        /* =========================================================
+           GRID
+        ========================================================= */
+
+        .grid-background {
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            z-index: 0;
+
+            opacity: .18;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent 85%
+                );
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .header {
+
+            position: sticky;
+
+            top: 18px;
+
+            z-index: 100;
+
+            width:
+                min(
+                    1380px,
+                    calc(100% - 40px)
+                );
+
+            height: 70px;
+
+            margin: 18px auto 0;
+
+            padding: 0 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 18px;
+
+            background:
+                rgba(10,13,29,.78);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,.28);
+        }
+
+
+        /* =========================================================
+           LOGO
+        ========================================================= */
 
         .brand {
+
             display: flex;
+
             align-items: center;
+
             gap: 12px;
-            font-size: 21px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 18px;
+
             font-weight: 700;
         }
 
         .brand-icon {
-            width: 40px;
-            height: 40px;
+
+            width: 39px;
+
+            height: 39px;
+
             border-radius: 12px;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
-            background: linear-gradient(135deg, #646cff, #00c6ff);
-            box-shadow: 0 8px 25px rgba(75, 100, 255, 0.35);
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3155ed,
+                    #713cf1
+                );
+
+            box-shadow:
+                0 10px 25px
+                rgba(49,85,237,.28);
         }
 
-        .back-home {
-            color: #dbe1ff;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: 0.2s;
+        .brand-text {
+
+            letter-spacing: -.3px;
         }
 
-        .back-home:hover {
-            background: rgba(255,255,255,0.10);
-            transform: translateY(-1px);
+        .brand-text span {
+
+            color: #8fa0ff;
         }
 
-        .container {
-            width: min(1100px, calc(100% - 40px));
-            margin: 40px auto;
-        }
+
+        /* =========================================================
+           HEADER RIGHT
+        ========================================================= */
 
         .back-button {
+
             display: inline-flex;
+
             align-items: center;
-            gap: 9px;
-            color: #bfc7e8;
+
+            gap: 8px;
+
+            padding: 10px 15px;
+
+            color: #cbd3ff;
+
             text-decoration: none;
-            margin-bottom: 20px;
-            transition: 0.2s;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            transition:
+                .2s ease;
         }
 
         .back-button:hover {
-            color: #ffffff;
+
+            color: white;
+
+            border-color:
+                rgba(113,60,241,.45);
+
+            background:
+                rgba(113,60,241,.12);
+
+            transform:
+                translateY(-1px);
         }
 
-        .email-card {
-            border-radius: 22px;
-            padding: 30px;
-            background: rgba(18, 24, 43, 0.82);
-            border: 1px solid rgba(255,255,255,0.09);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
-            backdrop-filter: blur(20px);
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .page {
+
+            position: relative;
+
+            z-index: 1;
+
+            width:
+                min(
+                    1380px,
+                    calc(100% - 40px)
+                );
+
+            margin: 0 auto;
+
+            padding:
+                55px 0
+                80px;
         }
 
-        .email-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 25px;
-            align-items: flex-start;
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .page-header {
+
             margin-bottom: 28px;
         }
 
+        .eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 12px;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            color: #aebaff;
+
+            background:
+                rgba(49,85,237,.10);
+
+            border:
+                1px solid
+                rgba(49,85,237,.18);
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: .6px;
+
+            text-transform: uppercase;
+        }
+
+        .page-header h1 {
+
+            margin: 0;
+
+            font-size: clamp(
+                32px,
+                5vw,
+                52px
+            );
+
+            line-height: 1.05;
+
+            letter-spacing: -1.8px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ffffff,
+                    #a8b7ff,
+                    #7956f5
+                );
+
+            -webkit-background-clip: text;
+
+            background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+
+            margin-top: 12px;
+
+            color: #8992ad;
+
+            font-size: 15px;
+        }
+
+
+        /* =========================================================
+           MAIN CARD
+        ========================================================= */
+
+        .email-card {
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(255,255,255,.075);
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20,24,48,.90),
+                    rgba(10,13,29,.78)
+                );
+
+            box-shadow:
+                0 25px 80px
+                rgba(0,0,0,.30);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+
+        /* =========================================================
+           EMAIL HEADER
+        ========================================================= */
+
+        .email-header {
+
+            padding: 30px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.065);
+        }
+
+
+        /* =========================================================
+           SUBJECT
+        ========================================================= */
+
         .subject {
-            font-size: 28px;
+
+            margin-bottom: 28px;
+
+            color: #ffffff;
+
+            font-size: clamp(
+                23px,
+                3vw,
+                31px
+            );
+
+            font-weight: 700;
+
             line-height: 1.25;
+
             word-break: break-word;
         }
 
-        .status {
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 15px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-            border: 1px solid transparent;
-        }
 
-        .status.not-scanned {
-            color: #ffd66b;
-            background: rgba(255, 193, 7, 0.12);
-            border-color: rgba(255, 193, 7, 0.25);
-        }
+        /* =========================================================
+           EMAIL INFO
+        ========================================================= */
 
-        .status.safe {
-            color: #65e6a5;
-            background: rgba(40, 200, 120, 0.12);
-            border-color: rgba(40, 200, 120, 0.25);
-        }
+        .email-info {
 
-        .status.spam {
-            color: #ff7d8a;
-            background: rgba(255, 70, 90, 0.12);
-            border-color: rgba(255, 70, 90, 0.25);
-        }
-
-        .info-box {
-            border-top: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding: 5px 0;
-            margin-bottom: 30px;
-        }
-
-        .info-row {
             display: grid;
-            grid-template-columns: 100px 1fr;
-            gap: 15px;
-            padding: 14px 5px;
-        }
 
-        .info-row:nth-child(odd) {
-            background: rgba(255,255,255,0.015);
+            grid-template-columns:
+                90px 1fr;
+
+            gap:
+                14px 18px;
+
+            font-size: 14px;
         }
 
         .info-label {
-            color: #858eaf;
-            font-size: 13px;
+
+            color: #727b98;
+
             font-weight: 600;
         }
 
         .info-value {
-            color: #e7eaff;
+
+            min-width: 0;
+
+            color: #dce1f1;
+
             word-break: break-word;
         }
 
-        .message-title {
-            font-size: 18px;
-            margin-bottom: 14px;
-        }
 
-        .message-box {
-            padding: 22px;
-            min-height: 180px;
-            border-radius: 15px;
-            background: rgba(4, 7, 16, 0.55);
-            border: 1px solid rgba(255,255,255,0.07);
-            color: #d9def5;
-            line-height: 1.7;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
+        /* =========================================================
+           GMAIL LOCATION
+        ========================================================= */
 
-        .analysis-box {
-            margin-top: 25px;
-            padding: 22px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.025);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
+        .gmail-location {
 
-        .analysis-title {
-            display: flex;
+            display: inline-flex;
+
             align-items: center;
-            gap: 10px;
-            font-size: 17px;
-            margin-bottom: 16px;
-        }
 
-        .analysis-text {
-            color: #aeb6d3;
-            line-height: 1.6;
-        }
+            gap: 8px;
 
-        .confidence {
-            margin-top: 16px;
-            display: none;
-        }
+            margin-top: 25px;
 
-        .confidence-label {
-            color: #858eaf;
+            padding: 9px 13px;
+
+            border-radius: 10px;
+
             font-size: 13px;
-            margin-bottom: 7px;
-        }
 
-        .confidence-value {
-            font-size: 20px;
             font-weight: 700;
         }
 
-        .error-box {
-            text-align: center;
-            padding: 70px 30px;
-            border-radius: 20px;
-            background: rgba(18,24,43,0.82);
-            border: 1px solid rgba(255,255,255,0.08);
+        .gmail-location.inbox {
+
+            color: #70e9b1;
+
+            background:
+                rgba(75,224,155,.09);
+
+            border:
+                1px solid
+                rgba(75,224,155,.18);
         }
 
-        .error-icon {
-            font-size: 45px;
-            color: #ff7180;
-            margin-bottom: 20px;
+        .gmail-location.spam {
+
+            color: #ff7f88;
+
+            background:
+                rgba(255,109,120,.09);
+
+            border:
+                1px solid
+                rgba(255,109,120,.18);
         }
 
-        .error-box h2 {
-            margin-bottom: 10px;
+        .gmail-location.other {
+
+            color: #aeb7d2;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
         }
 
-        .error-box p {
-            color: #9199b7;
-            margin-bottom: 25px;
+
+        /* =========================================================
+           DETECTION RESULT
+        ========================================================= */
+
+        .result-box {
+
+            margin-top: 22px;
+
+            padding: 17px 19px;
+
+            display: flex;
+
+            align-items: center;
+
+            border-radius: 13px;
         }
 
-        .error-back {
-            display: inline-block;
-            padding: 11px 18px;
+        .result-box.safe {
+
+            color: #73e9b1;
+
+            background:
+                rgba(75,224,155,.08);
+
+            border:
+                1px solid
+                rgba(75,224,155,.17);
+        }
+
+        .result-box.spam {
+
+            color: #ff8088;
+
+            background:
+                rgba(255,109,120,.08);
+
+            border:
+                1px solid
+                rgba(255,109,120,.17);
+        }
+
+        .result-box.unscanned {
+
+            color: #aab3ca;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+        }
+
+        .result-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .result-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
             border-radius: 10px;
-            text-decoration: none;
-            color: white;
-            background: linear-gradient(135deg, #5963ff, #3b82f6);
+
+            background:
+                rgba(255,255,255,.07);
         }
 
-        .error-back:hover {
-            opacity: 0.9;
+        .result-title {
+
+            font-size: 15px;
+
+            font-weight: 700;
         }
+
+        .result-subtitle {
+
+            margin-top: 3px;
+
+            color: rgba(255,255,255,.55);
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           CONTENT
+        ========================================================= */
+
+        .content-section {
+
+            padding: 30px;
+        }
+
+        .section-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 18px;
+
+            color: #f1f3fb;
+
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+        .section-title i {
+
+            color: #7e91ff;
+        }
+
+
+        /* =========================================================
+           MODEL INFO
+        ========================================================= */
+
+        .model-info {
+
+            display: none;
+
+            margin-bottom: 18px;
+
+            padding: 13px 15px;
+
+            border-radius: 10px;
+
+            color: #aeb7d0;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.06);
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           MESSAGE BODY
+        ========================================================= */
+
+        .message-box {
+
+            min-height: 180px;
+
+            max-height: 650px;
+
+            overflow-y: auto;
+
+            padding: 24px;
+
+            border-radius: 14px;
+
+            color: #dbe0ef;
+
+            background:
+                rgba(5,8,20,.52);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+            white-space: pre-wrap;
+
+            word-break: break-word;
+        }
+
+        .message-box::-webkit-scrollbar {
+
+            width: 7px;
+        }
+
+        .message-box::-webkit-scrollbar-track {
+
+            background:
+                rgba(255,255,255,.025);
+        }
+
+        .message-box::-webkit-scrollbar-thumb {
+
+            background:
+                rgba(255,255,255,.15);
+
+            border-radius: 10px;
+        }
+
+
+        /* =========================================================
+           LOADING
+        ========================================================= */
 
         .loading {
-            text-align: center;
-            padding: 80px;
-            color: #8e97b8;
+
+            min-height: 180px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            gap: 13px;
+
+            color: #8791ad;
         }
 
         .loading i {
-            font-size: 30px;
-            margin-bottom: 15px;
+
+            font-size: 25px;
+
+            color: #6d82ff;
         }
 
-        @media (max-width: 700px) {
-            .navbar {
-                padding: 0 18px;
+
+        /* =========================================================
+           ERROR
+        ========================================================= */
+
+        .error-box {
+
+            display: none;
+
+            padding: 18px;
+
+            border-radius: 13px;
+
+            color: #ff8991;
+
+            background:
+                rgba(255,109,120,.08);
+
+            border:
+                1px solid
+                rgba(255,109,120,.18);
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .actions {
+
+            padding:
+                22px 30px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.065);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding:
+                11px 17px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition:
+                .2s ease;
+        }
+
+        .dashboard-button {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3155ed,
+                    #5737e8
+                );
+
+            box-shadow:
+                0 8px 25px
+                rgba(49,85,237,.20);
+        }
+
+        .dashboard-button:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(49,85,237,.30);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 850px) {
+
+            .page {
+
+                padding-top: 40px;
             }
 
-            .container {
-                width: min(100% - 24px, 1100px);
-                margin: 25px auto;
+            .email-header,
+            .content-section {
+
+                padding: 24px;
             }
 
-            .email-card {
-                padding: 20px;
+            .actions {
+
+                padding:
+                    20px 24px;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .header {
+
+                width:
+                    calc(100% - 24px);
+
+                margin-top: 12px;
+
+                padding:
+                    0 14px;
             }
 
-            .email-header {
+            .page {
+
+                width:
+                    calc(100% - 24px);
+
+                padding-top: 32px;
+            }
+
+            .brand-text {
+
+                display: none;
+            }
+
+            .email-info {
+
+                grid-template-columns: 1fr;
+
+                gap: 5px;
+
+                margin-bottom: 12px;
+            }
+
+            .info-value {
+
+                margin-bottom: 8px;
+            }
+
+            .result-box {
+
+                align-items: flex-start;
+
                 flex-direction: column;
             }
 
-            .subject {
-                font-size: 23px;
+            .actions {
+
+                flex-direction: column;
+
+                align-items: stretch;
             }
 
-            .info-row {
-                grid-template-columns: 1fr;
-                gap: 5px;
+            .button {
+
+                width: 100%;
             }
         }
+
+
+        @media (max-width: 430px) {
+
+            .page-header h1 {
+
+                font-size: 31px;
+            }
+
+            .subject {
+
+                font-size: 21px;
+            }
+
+            .email-header,
+            .content-section {
+
+                padding: 19px;
+            }
+
+            .actions {
+
+                padding:
+                    18px 19px;
+            }
+
+            .message-box {
+
+                padding: 17px;
+
+                font-size: 13px;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-<nav class="navbar">
-    <div class="brand">
-        <div class="brand-icon">
-            <i class="fa-solid fa-shield-halved"></i>
-        </div>
-        <span>SpamGuard AI</span>
+
+    <!-- =========================================================
+         BACKGROUND
+    ========================================================== -->
+
+    <div class="ambient">
+
+        <div class="blob one"></div>
+
+        <div class="blob two"></div>
+
+        <div class="blob three"></div>
+
     </div>
 
-    <a href="/dashboard" class="back-home">
-        <i class="fa-solid fa-arrow-left"></i>
-        Dashboard
-    </a>
-</nav>
+    <div class="grid-background"></div>
 
-<main class="container">
 
-    <a href="/dashboard" class="back-button">
-        <i class="fa-solid fa-chevron-left"></i>
-        Back to Dashboard
-    </a>
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
 
-    <div id="loading" class="loading">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <div>Loading email...</div>
-    </div>
+    <header class="header">
 
-    <div id="errorBox" class="error-box" style="display:none;">
-        <div class="error-icon">
-            <i class="fa-solid fa-circle-exclamation"></i>
-        </div>
+        <a
+            href="/dashboard"
+            class="brand"
+        >
 
-        <h2>Unable to Load Email</h2>
+            <div class="brand-icon">
 
-        <p id="errorMessage">
-            The email could not be loaded.
-        </p>
+                <i class="fa-solid fa-shield-halved"></i>
 
-        <a href="/dashboard" class="error-back">
-            <i class="fa-solid fa-arrow-left"></i>
-            Return to Dashboard
+            </div>
+
+            <div class="brand-text">
+
+                Spam<span>Guard</span> AI
+
+            </div>
+
         </a>
-    </div>
 
-    <div id="emailCard" class="email-card" style="display:none;">
 
-        <div class="email-header">
+        <a
+            href="/dashboard"
+            class="back-button"
+        >
 
-            <h1 id="emailSubject" class="subject">
-                No Subject
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Dashboard
+
+        </a>
+
+    </header>
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <main class="page">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="page-header">
+
+            <div class="eyebrow">
+
+                <i class="fa-solid fa-envelope-open-text"></i>
+
+                Email Details
+
+            </div>
+
+            <h1>
+                Email Information
             </h1>
 
-            <!-- IMPORTANT:
-                 This status is controlled ONLY by the scan state.
-                 API is_spam=false cannot make this SAFE.
-            -->
-            <div id="securityStatus" class="status not-scanned">
-                <i class="fa-solid fa-circle-question"></i>
-                NOT SCANNED
-            </div>
+            <p>
+                View the complete email content and spam detection result.
+            </p>
 
         </div>
 
-        <div class="info-box">
 
-            <div class="info-row">
-                <div class="info-label">From</div>
-                <div id="emailFrom" class="info-value">—</div>
-            </div>
+        <!-- =====================================================
+             EMAIL CARD
+        ====================================================== -->
 
-            <div class="info-row">
-                <div class="info-label">To</div>
-                <div id="emailTo" class="info-value">—</div>
-            </div>
+        <section class="email-card">
 
-            <div class="info-row">
-                <div class="info-label">Date</div>
-                <div id="emailDate" class="info-value">—</div>
-            </div>
 
-        </div>
+            <!-- =================================================
+                 EMAIL HEADER
+            ================================================== -->
 
-        <h2 class="message-title">
-            <i class="fa-regular fa-envelope"></i>
-            Message
-        </h2>
+            <div class="email-header">
 
-        <div id="emailMessage" class="message-box">
-            No message content.
-        </div>
 
-        <div class="analysis-box">
+                <!-- SUBJECT -->
 
-            <div class="analysis-title">
-                <i class="fa-solid fa-shield-halved"></i>
-                Security Analysis
-            </div>
+                <div
+                    class="subject"
+                    id="emailSubject"
+                >
 
-            <div id="analysisText" class="analysis-text">
-                This email has not been scanned yet.
-            </div>
+                    Loading email...
 
-            <div id="confidenceBox" class="confidence">
-
-                <div class="confidence-label">
-                    Detection confidence
                 </div>
 
-                <div id="confidenceValue" class="confidence-value">
-                    —
+
+                <!-- EMAIL INFORMATION -->
+
+                <div class="email-info">
+
+
+                    <div class="info-label">
+                        From
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="emailFrom"
+                    >
+                        Loading...
+                    </div>
+
+
+                    <div class="info-label">
+                        To
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="emailTo"
+                    >
+                        Loading...
+                    </div>
+
+
+                    <div class="info-label">
+                        Date
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="emailDate"
+                    >
+                        Loading...
+                    </div>
+
+
+                </div>
+
+
+                <!-- GMAIL LOCATION -->
+
+                <div
+                    id="gmailLocation"
+                    class="gmail-location other"
+                >
+
+                    <i class="fa-solid fa-folder"></i>
+
+                    <span>
+                        Gmail Folder: Loading...
+                    </span>
+
+                </div>
+
+
+                <!-- DETECTION RESULT -->
+
+                <div
+                    id="resultBox"
+                    class="result-box unscanned"
+                >
+
+                    <div class="result-left">
+
+                        <div
+                            class="result-icon"
+                            id="resultIcon"
+                        >
+
+                            <i class="fa-solid fa-circle-question"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div
+                                class="result-title"
+                                id="resultTitle"
+                            >
+                                NOT SCANNED
+                            </div>
+
+                            <div
+                                class="result-subtitle"
+                                id="resultSubtitle"
+                            >
+                                This email has not been analyzed yet.
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
 
-    </div>
+            <!-- =================================================
+                 EMAIL CONTENT
+            ================================================== -->
 
-</main>
+            <div class="content-section">
 
-<script>
 
-/* =========================================================
-   GET EMAIL ID
-   ========================================================= */
+                <div
+                    class="model-info"
+                    id="modelInfo"
+                >
+                </div>
 
-function getMessageId() {
 
-    const pathParts = window.location.pathname
-        .split("/")
-        .filter(Boolean);
+                <div class="section-title">
 
-    const emailDetailsIndex =
-        pathParts.indexOf("email-details");
+                    <i class="fa-solid fa-file-lines"></i>
 
-    if (
-        emailDetailsIndex !== -1 &&
-        pathParts[emailDetailsIndex + 1]
-    ) {
-        return decodeURIComponent(
-            pathParts[emailDetailsIndex + 1]
-        );
-    }
+                    Email Content
 
-    const params =
-        new URLSearchParams(window.location.search);
+                </div>
 
-    return params.get("id");
-}
 
+                <div
+                    class="message-box"
+                    id="messageContent"
+                >
 
-/* =========================================================
-   CRITICAL SCAN STATE FUNCTION
-   =========================================================
+                    <div
+                        class="loading"
+                        id="loading"
+                    >
 
-   RULE:
+                        <i class="fa-solid fa-spinner fa-spin"></i>
 
-   scanned=1  -> SAFE or SPAM
-   everything else -> NOT SCANNED
+                        <span>
+                            Loading email content...
+                        </span>
 
-   We NEVER use /api/email's is_spam value to decide
-   whether an email has been scanned.
-   ========================================================= */
+                    </div>
 
-function getScanStatus() {
 
-    const params =
-        new URLSearchParams(window.location.search);
+                    <div
+                        class="error-box"
+                        id="errorBox"
+                    >
+                    </div>
 
-    /*
-     * Only EXACTLY "1" means scanned.
-     */
-    const scanned =
-        params.get("scanned") === "1";
+                </div>
 
-    /*
-     * If scanned is NOT explicitly 1,
-     * force NOT SCANNED.
-     */
-    if (!scanned) {
+            </div>
 
-        return {
-            scanned: false,
-            isSpam: null,
-            label: "NOT SCANNED",
-            confidence: null
-        };
-    }
 
-    /*
-     * We only read is_spam after confirming
-     * scanned=1.
-     */
-    const isSpam =
-        params.get("is_spam") === "1";
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
 
-    const confidence =
-        params.get("confidence");
+            <div class="actions">
 
-    return {
-        scanned: true,
-        isSpam: isSpam,
-        label: isSpam ? "SPAM" : "SAFE",
-        confidence: confidence
-    };
-}
+                <a
+                    href="/dashboard"
+                    class="button dashboard-button"
+                >
 
+                    <i class="fa-solid fa-arrow-left"></i>
 
-/* =========================================================
-   SECURITY STATUS
-   ========================================================= */
+                    Back to Dashboard
 
-function renderSecurityStatus(scanStatus) {
+                </a>
 
-    const status =
-        document.getElementById("securityStatus");
+            </div>
 
-    /*
-     * DEFAULT = NOT SCANNED
-     */
-    status.className = "status not-scanned";
 
-    status.innerHTML =
-        '<i class="fa-solid fa-circle-question"></i> NOT SCANNED';
+        </section>
 
+    </main>
 
-    /*
-     * DO NOT continue unless explicitly scanned.
-     */
-    if (scanStatus.scanned !== true) {
-        return;
-    }
 
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================= -->
 
-    /*
-     * SCANNED + SPAM
-     */
-    if (scanStatus.isSpam === true) {
+    <script>
 
-        status.className = "status spam";
+        "use strict";
 
-        status.innerHTML =
-            '<i class="fa-solid fa-triangle-exclamation"></i> SPAM';
 
-        return;
-    }
+        /* =====================================================
+           GET MESSAGE ID
+        ===================================================== */
 
+        function getMessageId() {
 
-    /*
-     * SCANNED + NOT SPAM
-     */
-    status.className = "status safe";
+            const pathParts =
+                window.location.pathname
+                    .split("/")
+                    .filter(Boolean);
 
-    status.innerHTML =
-        '<i class="fa-solid fa-circle-check"></i> SAFE';
-}
-
-
-/* =========================================================
-   SECURITY ANALYSIS
-   ========================================================= */
-
-function renderAnalysis(scanStatus) {
-
-    const analysisText =
-        document.getElementById("analysisText");
-
-    const confidenceBox =
-        document.getElementById("confidenceBox");
-
-    const confidenceValue =
-        document.getElementById("confidenceValue");
-
-
-    /*
-     * ALWAYS RESET FIRST
-     */
-    confidenceBox.style.display = "none";
-
-    confidenceValue.textContent = "—";
-
-
-    /*
-     * NOT SCANNED
-     */
-    if (scanStatus.scanned !== true) {
-
-        analysisText.innerHTML = `
-            <strong style="color:#ffd66b;">
-                <i class="fa-solid fa-circle-question"></i>
-                Email Not Scanned
-            </strong>
-            <br><br>
-            This email has not been analyzed yet.
-            Return to the dashboard and scan the email
-            before a security classification can be displayed.
-        `;
-
-        return;
-    }
-
-
-    /*
-     * SCANNED + SPAM
-     */
-    if (scanStatus.isSpam === true) {
-
-        analysisText.innerHTML = `
-            <strong style="color:#ff7d8a;">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                This email was classified as SPAM.
-            </strong>
-            <br><br>
-            The security scan identified characteristics
-            associated with unwanted or suspicious email.
-        `;
-
-    } else {
-
-        /*
-         * SCANNED + SAFE
-         */
-        analysisText.innerHTML = `
-            <strong style="color:#65e6a5;">
-                <i class="fa-solid fa-circle-check"></i>
-                This email was classified as SAFE.
-            </strong>
-            <br><br>
-            The security scan did not identify the email
-            as spam.
-        `;
-    }
-
-
-    /*
-     * CONFIDENCE IS SHOWN ONLY AFTER SCANNING
-     */
-    if (
-        scanStatus.confidence !== null &&
-        scanStatus.confidence !== ""
-    ) {
-
-        confidenceBox.style.display = "block";
-
-        confidenceValue.textContent =
-            scanStatus.confidence + "%";
-    }
-}
-
-
-/* =========================================================
-   CLEAN EMAIL VALUE
-   ========================================================= */
-
-function getValue(value, fallback = "—") {
-
-    if (
-        value === null ||
-        value === undefined ||
-        String(value).trim() === ""
-    ) {
-        return fallback;
-    }
-
-    return String(value);
-}
-
-
-/* =========================================================
-   FORMAT DATE
-   ========================================================= */
-
-function formatDate(value) {
-
-    if (!value) {
-        return "—";
-    }
-
-    try {
-
-        const date = new Date(value);
-
-        if (Number.isNaN(date.getTime())) {
-            return value;
+            const emailDetailsIndex =
+                pathParts.indexOf(
+                    "email-details"
+                );
+
+            if (
+                emailDetailsIndex !== -1
+                &&
+                pathParts[emailDetailsIndex + 1]
+            ) {
+
+                return decodeURIComponent(
+                    pathParts[emailDetailsIndex + 1]
+                );
+
+            }
+
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            return (
+                params.get("id")
+                ||
+                params.get("message_id")
+                ||
+                ""
+            );
         }
 
-        return date.toLocaleString();
 
-    } catch (error) {
+        /* =====================================================
+           SAFE TEXT
+        ===================================================== */
 
-        return value;
-    }
-}
+        function setText(
+            elementId,
+            value,
+            fallback = ""
+        ) {
 
+            const element =
+                document.getElementById(
+                    elementId
+                );
 
-/* =========================================================
-   RENDER EMAIL
-   ========================================================= */
+            if (!element) {
+                return;
+            }
 
-function renderEmail(data, scanStatus) {
+            if (
+                value === null
+                ||
+                value === undefined
+                ||
+                String(value).trim() === ""
+            ) {
 
-    /*
-     * IMPORTANT:
-     *
-     * We DO NOT modify scanStatus from data.
-     *
-     * Even if API returns:
-     *
-     * is_spam: false
-     *
-     * it MUST NOT become SAFE.
-     *
-     * The URL scan state is authoritative.
-     */
+                element.textContent =
+                    fallback;
 
+                return;
+            }
 
-    const email =
-        data?.email || data || {};
-
-
-    /* -----------------------------------------
-       SUBJECT
-       ----------------------------------------- */
-
-    document.getElementById("emailSubject")
-        .textContent =
-        getValue(
-            email.subject,
-            "No Subject"
-        );
+            element.textContent =
+                String(value);
+        }
 
 
-    /* -----------------------------------------
-       FROM
-       ----------------------------------------- */
+        /* =====================================================
+           SHOW ERROR
+        ===================================================== */
 
-    document.getElementById("emailFrom")
-        .textContent =
-        getValue(
-            email.from ||
-            email.sender ||
-            email.from_email
-        );
+        function showError(message) {
 
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
 
-    /* -----------------------------------------
-       TO
-       ----------------------------------------- */
+            const errorBox =
+                document.getElementById(
+                    "errorBox"
+                );
 
-    document.getElementById("emailTo")
-        .textContent =
-        getValue(
-            email.to ||
-            email.recipient ||
-            email.to_email
-        );
+            if (loading) {
 
+                loading.style.display =
+                    "none";
+            }
 
-    /* -----------------------------------------
-       DATE
-       ----------------------------------------- */
+            if (errorBox) {
 
-    document.getElementById("emailDate")
-        .textContent =
-        formatDate(
-            email.date ||
-            email.internal_date ||
-            email.timestamp
-        );
+                errorBox.style.display =
+                    "block";
 
+                errorBox.innerHTML = `
 
-    /* -----------------------------------------
-       MESSAGE
-       ----------------------------------------- */
+                    <strong>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Unable to load email
+                    </strong>
 
-    let message =
-        email.body ||
-        email.message ||
-        email.text ||
-        email.snippet ||
-        "";
+                    <br><br>
+
+                    ${escapeHtml(message)}
+
+                `;
+            }
+        }
 
 
-    /*
-     * If HTML content is returned,
-     * display text safely.
-     */
-    if (typeof message !== "string") {
-        message = String(message);
-    }
+        /* =====================================================
+           ESCAPE HTML
+        ===================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+        }
 
 
-    document.getElementById("emailMessage")
-        .textContent =
-        message || "No message content.";
+        /* =====================================================
+           DISPLAY EMAIL BODY
+        ===================================================== */
+
+        function displayBody(body) {
+
+            const messageContent =
+                document.getElementById(
+                    "messageContent"
+                );
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+            const errorBox =
+                document.getElementById(
+                    "errorBox"
+                );
+
+            if (loading) {
+
+                loading.style.display =
+                    "none";
+            }
+
+            if (errorBox) {
+
+                errorBox.style.display =
+                    "none";
+            }
+
+            if (!messageContent) {
+                return;
+            }
 
 
-    /* -----------------------------------------
-       SECURITY
-       ----------------------------------------- */
+            let text =
+                body;
 
-    renderSecurityStatus(scanStatus);
+            if (
+                text === null
+                ||
+                text === undefined
+                ||
+                String(text).trim() === ""
+            ) {
 
-    renderAnalysis(scanStatus);
-}
-
-
-/* =========================================================
-   LOAD EMAIL
-   ========================================================= */
-
-async function loadEmail() {
-
-    const messageId =
-        getMessageId();
+                text =
+                    "No readable text was found in this email.";
+            }
 
 
-    /*
-     * NO EMAIL ID
-     */
+            /*
+             * IMPORTANT:
+             *
+             * We use textContent instead of innerHTML.
+             *
+             * This prevents Gmail email HTML from breaking
+             * the page and keeps the email content visible.
+             */
 
-    if (!messageId) {
-
-        showError(
-            "No email ID was provided."
-        );
-
-        return;
-    }
-
-
-    /*
-     * VERY IMPORTANT:
-     *
-     * Read scan status BEFORE loading API data.
-     *
-     * This prevents API's is_spam=false from
-     * automatically becoming SAFE.
-     */
-
-    const scanStatus =
-        getScanStatus();
+            messageContent.textContent =
+                String(text);
+        }
 
 
-    console.log(
-        "DETAILS PAGE SCAN STATUS:",
-        scanStatus
-    );
+        /* =====================================================
+           DISPLAY GMAIL LOCATION
+        ===================================================== */
+
+        function displayGmailLocation(email) {
+
+            const location =
+                document.getElementById(
+                    "gmailLocation"
+                );
+
+            if (!location) {
+                return;
+            }
 
 
-    try {
+            const mailbox =
+                String(
+                    email.mailbox || ""
+                ).toLowerCase();
 
-        const response =
-            await fetch(
-                "/api/email/" +
-                encodeURIComponent(messageId),
+
+            if (
+                mailbox === "spam"
+                ||
+                email.is_gmail_spam === true
+            ) {
+
+                location.className =
+                    "gmail-location spam";
+
+                location.innerHTML = `
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <span>
+                        Gmail Folder:
+                        <strong>SPAM</strong>
+                    </span>
+
+                `;
+
+                return;
+            }
+
+
+            if (mailbox === "inbox") {
+
+                location.className =
+                    "gmail-location inbox";
+
+                location.innerHTML = `
+
+                    <i class="fa-solid fa-inbox"></i>
+
+                    <span>
+                        Gmail Folder:
+                        <strong>INBOX</strong>
+                    </span>
+
+                `;
+
+                return;
+            }
+
+
+            location.className =
+                "gmail-location other";
+
+            location.innerHTML = `
+
+                <i class="fa-solid fa-folder"></i>
+
+                <span>
+                    Gmail Folder:
+                    <strong>
+                        ${escapeHtml(
+                            email.gmail_label
+                            ||
+                            "OTHER"
+                        )}
+                    </strong>
+                </span>
+
+            `;
+        }
+
+
+        /* =====================================================
+           DISPLAY SCAN RESULT
+        ===================================================== */
+
+        function displayScanResult(email) {
+
+            const resultBox =
+                document.getElementById(
+                    "resultBox"
+                );
+
+            const resultIcon =
+                document.getElementById(
+                    "resultIcon"
+                );
+
+            const resultTitle =
+                document.getElementById(
+                    "resultTitle"
+                );
+
+            const resultSubtitle =
+                document.getElementById(
+                    "resultSubtitle"
+                );
+
+
+            if (!resultBox) {
+                return;
+            }
+
+
+            /*
+             * =================================================
+             * NOT SCANNED
+             * =================================================
+             */
+
+            if (email.scanned !== true) {
+
+                resultBox.className =
+                    "result-box unscanned";
+
+                if (resultIcon) {
+
+                    resultIcon.innerHTML =
+                        '<i class="fa-solid fa-circle-question"></i>';
+                }
+
+                if (resultTitle) {
+
+                    resultTitle.textContent =
+                        "NOT SCANNED";
+                }
+
+                if (resultSubtitle) {
+
+                    resultSubtitle.textContent =
+                        "This email has not been analyzed yet.";
+                }
+
+                return;
+            }
+
+
+            /*
+             * =================================================
+             * SPAM
+             * =================================================
+             */
+
+            if (email.is_spam === true) {
+
+                resultBox.className =
+                    "result-box spam";
+
+                if (resultIcon) {
+
+                    resultIcon.innerHTML =
+                        '<i class="fa-solid fa-triangle-exclamation"></i>';
+                }
+
+                if (resultTitle) {
+
+                    resultTitle.textContent =
+                        "SPAM / SCAM";
+                }
+
+                if (resultSubtitle) {
+
+                    resultSubtitle.textContent =
+                        "The Linear SVM detected this email as spam.";
+                }
+
+            }
+
+
+            /*
+             * =================================================
+             * SAFE
+             * =================================================
+             */
+
+            else {
+
+                resultBox.className =
+                    "result-box safe";
+
+                if (resultIcon) {
+
+                    resultIcon.innerHTML =
+                        '<i class="fa-solid fa-shield"></i>';
+                }
+
+                if (resultTitle) {
+
+                    resultTitle.textContent =
+                        "SAFE";
+                }
+
+                if (resultSubtitle) {
+
+                    resultSubtitle.textContent =
+                        "";
+                }
+            }
+
+
+            /*
+             * =================================================
+             * MODEL INFORMATION
+             * =================================================
+             */
+
+            const modelInfo =
+                document.getElementById(
+                    "modelInfo"
+                );
+
+            if (
+                modelInfo
+                &&
+                email.model_name
+            ) {
+
+                const accuracy =
+                    email.model_accuracy;
+
+                modelInfo.innerHTML = `
+
+                    <i class="fa-solid fa-microchip"></i>
+
+                    <strong>
+                        Detection Model:
+                    </strong>
+
+                    ${escapeHtml(
+                        email.model_name
+                    )}
+
+                    ${
+                        accuracy !== null
+                        &&
+                        accuracy !== undefined
+                        &&
+                        String(accuracy).trim() !== ""
+                        ?
+                        `
+                            &nbsp; • &nbsp;
+
+                            <strong>
+                                Model Accuracy:
+                            </strong>
+
+                            ${escapeHtml(
+                                accuracy
+                            )}%
+                        `
+                        :
+                        ""
+                    }
+
+                `;
+
+                modelInfo.style.display =
+                    "block";
+            }
+        }
+
+
+        /* =====================================================
+           LOAD EMAIL
+        ===================================================== */
+
+        async function loadEmail() {
+
+            const messageId =
+                getMessageId();
+
+            console.log(
+                "Email Details Message ID:",
+                messageId
+            );
+
+            if (!messageId) {
+
+                showError(
+                    "No Gmail message ID was found in the URL."
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               READ SCAN RESULT FROM URL
+
+               Confidence is intentionally NOT used here.
+            ================================================= */
+
+            const urlParams =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            const scannedFromUrl =
+                urlParams.get("scanned");
+
+            const spamFromUrl =
+                urlParams.get("is_spam");
+
+            const modelNameFromUrl =
+                urlParams.get("model_name");
+
+            const modelAccuracyFromUrl =
+                urlParams.get("model_accuracy");
+
+
+            console.log(
+                "Scan information from URL:",
                 {
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json"
-                    },
-                    cache: "no-store"
+                    scanned: scannedFromUrl,
+                    is_spam: spamFromUrl,
+                    model_name: modelNameFromUrl,
+                    model_accuracy: modelAccuracyFromUrl
                 }
             );
 
 
-        if (!response.ok) {
+            /*
+             * IMPORTANT
+             *
+             * encodeURIComponent protects the Gmail message ID.
+             */
 
-            throw new Error(
-                "Server returned HTTP " +
-                response.status
+            const apiUrl =
+                "/api/email/"
+                +
+                encodeURIComponent(
+                    messageId
+                );
+
+
+            console.log(
+                "Requesting:",
+                apiUrl
             );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        apiUrl,
+                        {
+                            method: "GET",
+
+                            cache: "no-store",
+
+                            credentials: "same-origin",
+
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                console.log(
+                    "API status:",
+                    response.status
+                );
+
+
+                /* =================================================
+                   LOGIN EXPIRED
+                ================================================= */
+
+                if (
+                    response.status === 401
+                ) {
+
+                    window.location.href =
+                        "/connect-gmail";
+
+                    return;
+                }
+
+
+                /* =================================================
+                   READ RESPONSE
+                ================================================= */
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Email API response:",
+                    data
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error
+                        ||
+                        `Server returned ${response.status}`
+                    );
+                }
+
+
+                if (
+                    !data
+                    ||
+                    data.success !== true
+                ) {
+
+                    throw new Error(
+                        data.error
+                        ||
+                        "The server did not return an email."
+                    );
+                }
+
+
+                const email =
+                    data.result;
+
+
+                if (
+                    !email
+                    ||
+                    typeof email !== "object"
+                ) {
+
+                    throw new Error(
+                        "The server returned an empty email result."
+                    );
+                }
+
+
+                console.log(
+                    "Original API email:",
+                    email
+                );
+
+
+                /* =================================================
+                   EMAIL INFORMATION
+                ================================================= */
+
+                setText(
+                    "emailSubject",
+                    email.subject,
+                    "(No Subject)"
+                );
+
+
+                setText(
+                    "emailFrom",
+                    email.sender,
+                    "Unknown Sender"
+                );
+
+
+                setText(
+                    "emailTo",
+                    email.to,
+                    "Unknown"
+                );
+
+
+                setText(
+                    "emailDate",
+                    email.date,
+                    "Unknown"
+                );
+
+
+                /* =================================================
+                   EMAIL BODY
+                ================================================= */
+
+                displayBody(
+                    email.body
+                );
+
+
+                /* =================================================
+                   GMAIL LOCATION
+                ================================================= */
+
+                displayGmailLocation(
+                    email
+                );
+
+
+                /* =================================================
+                   IMPORTANT:
+                   MERGE SCAN RESULT FROM URL
+                ================================================= */
+
+                if (
+                    scannedFromUrl === "1"
+                ) {
+
+                    email.scanned = true;
+
+
+                    /*
+                     * is_spam=1 -> SPAM
+                     * is_spam=0 -> SAFE
+                     */
+
+                    if (
+                        spamFromUrl === "1"
+                    ) {
+
+                        email.is_spam = true;
+
+                    }
+                    else if (
+                        spamFromUrl === "0"
+                    ) {
+
+                        email.is_spam = false;
+
+                    }
+
+
+                    /*
+                     * Model name
+                     */
+
+                    if (
+                        modelNameFromUrl
+                    ) {
+
+                        email.model_name =
+                            modelNameFromUrl;
+                    }
+
+
+                    /*
+                     * Model accuracy
+                     */
+
+                    if (
+                        modelAccuracyFromUrl
+                    ) {
+
+                        email.model_accuracy =
+                            modelAccuracyFromUrl;
+                    }
+
+                }
+
+
+                console.log(
+                    "FINAL EMAIL DATA USED FOR DISPLAY:",
+                    email
+                );
+
+
+                /* =================================================
+                   DISPLAY SCAN RESULT
+                ================================================= */
+
+                displayScanResult(
+                    email
+                );
+
+
+                console.log(
+                    "Email successfully displayed."
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "EMAIL DETAILS ERROR:",
+                    error
+                );
+
+
+                showError(
+                    error.message
+                    ||
+                    "Unable to load email content."
+                );
+            }
         }
 
 
-        const data =
-            await response.json();
+        /* =====================================================
+           START
+        ===================================================== */
 
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-        console.log(
-            "EMAIL API DATA:",
-            data
+                loadEmail();
+
+            }
         );
 
 
-        /*
-         * IMPORTANT:
-         *
-         * renderEmail receives scanStatus separately.
-         *
-         * API classification cannot override it.
-         */
-
-        renderEmail(
-            data,
-            scanStatus
-        );
-
-
-        document.getElementById("loading")
-            .style.display = "none";
-
-        document.getElementById("emailCard")
-            .style.display = "block";
-
-
-    } catch (error) {
-
-        console.error(
-            "Failed to load email:",
-            error
-        );
-
-        showError(
-            error.message ||
-            "Unable to load this email."
-        );
-    }
-}
-
-
-/* =========================================================
-   SHOW ERROR
-   ========================================================= */
-
-function showError(message) {
-
-    document.getElementById("loading")
-        .style.display = "none";
-
-    document.getElementById("emailCard")
-        .style.display = "none";
-
-    document.getElementById("errorBox")
-        .style.display = "block";
-
-    document.getElementById("errorMessage")
-        .textContent =
-        message;
-}
-
-
-/* =========================================================
-   START
-   ========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        loadEmail();
-
-    }
-);
-
-</script>
+    </script>
 
 </body>
+
 </html>

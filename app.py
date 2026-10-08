@@ -40,7 +40,7 @@ app.secret_key = "spamguard-secret-key-change-this-later"
 
 
 # =========================================================
-# GOOGLE SETTINGS & REDIRECT URI
+# GOOGLE SETTINGS (RENDER ONLINE REDIRECT URI)
 # =========================================================
 
 CLIENT_SECRETS_FILE = os.path.join(
@@ -52,8 +52,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.modify"
 ]
 
-# Render ပေါ်အတွက် REDIRECT_URI ကို variable အဖြစ် ကြေညာခြင်း
+# Render ပေါ်တွင် အလုပ်လုပ်ရန် သင့်ရဲ့ Render URL အတိအကျဖြင့် ပြင်ဆင်ထားသည်
 REDIRECT_URI = 'https://spamemaildetection-63d0.onrender.com/oauth2callback'
+
 
 # =========================================================
 # GMAIL CONSTANTS
@@ -153,6 +154,131 @@ def dashboard():
 
 
 # =========================================================
+# EMAIL DETAILS PAGE
+# =========================================================
+
+@app.route(
+    "/email-details/<message_id>"
+)
+def email_details(message_id):
+
+    try:
+
+        print()
+        print("=" * 60)
+        print("EMAIL DETAILS PAGE")
+        print("=" * 60)
+
+        print(
+            "Message ID:",
+            message_id
+        )
+
+        if "credentials" not in session:
+
+            print(
+                "Email details blocked - "
+                "no Gmail credentials."
+            )
+
+            response = redirect(
+                "/connect-gmail"
+            )
+
+            return disable_cache(
+                response
+            )
+
+        response = send_from_directory(
+            BASE_DIR,
+            "email-details.html"
+        )
+
+        return disable_cache(
+            response
+        )
+
+    except Exception as e:
+
+        print()
+        print("=" * 60)
+        print("EMAIL DETAILS PAGE ERROR")
+        print("=" * 60)
+
+        print(e)
+
+        error_response = f"""
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+Email Details Error
+</title>
+
+<style>
+
+body {{
+
+    margin: 0;
+
+    padding: 50px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #070914;
+
+    color: white;
+}}
+
+a {{
+
+    color: #8da2ff;
+
+    text-decoration: none;
+}}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Email Details Error
+</h1>
+
+<p>
+{html.escape(str(e))}
+</p>
+
+<br>
+
+<a href="/dashboard">
+Back to Dashboard
+</a>
+
+</body>
+
+</html>
+"""
+
+        return error_response, 500
+
+
+# =========================================================
 # CSS
 # =========================================================
 
@@ -218,21 +344,27 @@ def google_login():
                 old_email
             )
 
-        # Start a completely fresh OAuth session.
         session.clear()
 
         flow = Flow.from_client_secrets_file(
+
             CLIENT_SECRETS_FILE,
+
             scopes=SCOPES
+
         )
 
         flow.redirect_uri = REDIRECT_URI
 
         authorization_url, state = (
             flow.authorization_url(
+
                 access_type="offline",
+
                 include_granted_scopes=False,
+
                 prompt="select_account consent"
+
             )
         )
 
@@ -270,9 +402,11 @@ def google_login():
         return f"""
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
 
 <title>
 Google Authentication Failed
@@ -281,7 +415,7 @@ Google Authentication Failed
 </head>
 
 <body style="
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     padding: 50px;
 ">
 
@@ -342,9 +476,11 @@ def oauth2callback():
             return """
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
 
 <title>
 OAuth Session Expired
@@ -379,9 +515,11 @@ Try Again
             return """
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
 
 <title>
 OAuth Code Verifier Missing
@@ -412,9 +550,13 @@ Try Again
 """, 400
 
         flow = Flow.from_client_secrets_file(
+
             CLIENT_SECRETS_FILE,
+
             scopes=SCOPES,
+
             state=state
+
         )
 
         flow.redirect_uri = REDIRECT_URI
@@ -533,9 +675,11 @@ Try Again
         return f"""
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
 
 <title>
 Google Authentication Failed
@@ -693,7 +837,10 @@ def get_gmail_profile(service):
 # GET HEADER
 # =========================================================
 
-def get_message_header(headers, name):
+def get_message_header(
+    headers,
+    name
+):
 
     wanted = name.lower()
 
@@ -1069,7 +1216,7 @@ def gmail_test():
             )
         )
 
-        return jsonify({
+        response = jsonify({
 
             "success":
                 True,
@@ -1081,6 +1228,10 @@ def gmail_test():
                 "Gmail connection is working."
 
         })
+
+        return disable_cache(
+            response
+        )
 
     except Exception as e:
 
@@ -1117,7 +1268,7 @@ def gmail_account():
             )
         )
 
-        return jsonify({
+        response = jsonify({
 
             "success":
                 True,
@@ -1126,6 +1277,10 @@ def gmail_account():
                 email_address
 
         })
+
+        return disable_cache(
+            response
+        )
 
     except Exception as e:
 
@@ -1319,6 +1474,243 @@ def gmail_spam():
             "GMAIL SPAM ERROR:",
             e
         )
+
+        return jsonify({
+
+            "success":
+                False,
+
+            "error":
+                str(e)
+
+        }), 500
+
+
+# =========================================================
+# GET ONE EMAIL API
+# =========================================================
+
+@app.route(
+    "/api/email/<message_id>"
+)
+def api_email(message_id):
+
+    try:
+
+        print()
+        print("=" * 60)
+        print("GET EMAIL API")
+        print("=" * 60)
+
+        print(
+            "Message ID:",
+            message_id
+        )
+
+        if "credentials" not in session:
+
+            return jsonify({
+
+                "success":
+                    False,
+
+                "error":
+                    "Gmail is not connected."
+
+            }), 401
+
+        service = get_gmail_service()
+
+        message = (
+            service.users()
+            .messages()
+            .get(
+                userId="me",
+                id=message_id,
+                format="full"
+            )
+            .execute()
+        )
+
+        payload = message.get(
+            "payload",
+            {}
+        )
+
+        headers = payload.get(
+            "headers",
+            []
+        )
+
+        from scan_gmail import (
+            get_header,
+            extract_email_body
+        )
+
+        subject = get_header(
+            headers,
+            "Subject"
+        )
+
+        sender = get_header(
+            headers,
+            "From"
+        )
+
+        receiver = get_header(
+            headers,
+            "To"
+        )
+
+        date = get_header(
+            headers,
+            "Date"
+        )
+
+        if not subject:
+
+            subject = "(No Subject)"
+
+        if not sender:
+
+            sender = "Unknown Sender"
+
+        if not receiver:
+
+            receiver = "Unknown"
+
+        if not date:
+
+            date = "Unknown"
+
+        body = extract_email_body(
+            payload
+        )
+
+        if not body:
+
+            body = (
+                "No readable text "
+                "was found in this email."
+            )
+
+        label_ids = message.get(
+            "labelIds",
+            []
+        )
+
+        if GMAIL_SPAM_LABEL in label_ids:
+
+            gmail_label = (
+                GMAIL_SPAM_LABEL
+            )
+
+            mailbox = "spam"
+
+        elif GMAIL_INBOX_LABEL in label_ids:
+
+            gmail_label = (
+                GMAIL_INBOX_LABEL
+            )
+
+            mailbox = "inbox"
+
+        else:
+
+            gmail_label = None
+
+            mailbox = "other"
+
+        result = {
+
+            "id":
+                message_id,
+
+            "threadId":
+                message.get(
+                    "threadId"
+                ),
+
+            "subject":
+                subject,
+
+            "sender":
+                sender,
+
+            "sender_email":
+                extract_sender_email(
+                    sender
+                ),
+
+            "to":
+                receiver,
+
+            "date":
+                date,
+
+            "body":
+                body,
+
+            "gmail_label":
+                gmail_label,
+
+            "mailbox":
+                mailbox,
+
+            "is_gmail_spam":
+                mailbox == "spam",
+
+            "scanned":
+                False,
+
+            "label":
+                "NOT SCANNED",
+
+            "is_spam":
+                None,
+
+            "confidence":
+                None,
+
+            "model":
+                None,
+
+            "model_name":
+                None,
+
+            "model_accuracy":
+                None
+
+        }
+
+        response = jsonify({
+
+            "success":
+                True,
+
+            "email":
+                session.get(
+                    "gmail_email",
+                    "Unknown"
+                ),
+
+            "result":
+                result
+
+        })
+
+        return disable_cache(
+            response
+        )
+
+    except Exception as e:
+
+        print()
+        print("=" * 60)
+        print("GET EMAIL API ERROR")
+        print("=" * 60)
+
+        print(e)
 
         return jsonify({
 
@@ -1532,7 +1924,7 @@ def scan_one_email_route(
             mailbox
         )
 
-        return jsonify({
+        response = jsonify({
 
             "success":
                 True,
@@ -1547,6 +1939,10 @@ def scan_one_email_route(
                 result
 
         })
+
+        return disable_cache(
+            response
+        )
 
     except Exception as e:
 
@@ -1618,8 +2014,12 @@ def scan_gmail_route():
 
         )
 
-        return jsonify(
+        response = jsonify(
             results
+        )
+
+        return disable_cache(
+            response
         )
 
     except Exception as e:
@@ -1649,7 +2049,7 @@ def scan_gmail_route():
 @app.route("/model-info")
 def model_info():
 
-    return jsonify({
+    response = jsonify({
 
         "success":
             True,
@@ -1696,6 +2096,10 @@ def model_info():
             {}
 
     })
+
+    return disable_cache(
+        response
+    )
 
 
 # =========================================================
@@ -1788,7 +2192,7 @@ def move_to_spam_route(
 
             }), 500
 
-        return jsonify({
+        response = jsonify({
 
             "success":
                 True,
@@ -1809,6 +2213,10 @@ def move_to_spam_route(
                 True
 
         })
+
+        return disable_cache(
+            response
+        )
 
     except Exception as e:
 
@@ -1934,7 +2342,7 @@ def move_to_safe_route(
 
             }), 500
 
-        return jsonify({
+        response = jsonify({
 
             "success":
                 True,
@@ -1956,6 +2364,10 @@ def move_to_safe_route(
 
         })
 
+        return disable_cache(
+            response
+        )
+
     except Exception as e:
 
         print()
@@ -1974,853 +2386,6 @@ def move_to_safe_route(
                 str(e)
 
         }), 500
-
-
-# =========================================================
-# VIEW EMAIL DETAILS
-# =========================================================
-
-@app.route(
-    "/email-details/<message_id>"
-)
-def email_details(
-    message_id
-):
-
-    try:
-
-        print()
-        print("=" * 60)
-        print("EMAIL DETAILS")
-        print("=" * 60)
-
-        print(
-            "Message ID:",
-            message_id
-        )
-
-        if "credentials" not in session:
-
-            response = redirect(
-                "/connect-gmail"
-            )
-
-            return disable_cache(
-                response
-            )
-
-        service = get_gmail_service()
-
-        message = (
-            service.users()
-            .messages()
-            .get(
-                userId="me",
-                id=message_id,
-                format="full"
-            )
-            .execute()
-        )
-
-        payload = message.get(
-            "payload",
-            {}
-        )
-
-        headers = payload.get(
-            "headers",
-            []
-        )
-
-        from scan_gmail import (
-            get_header,
-            extract_email_body
-        )
-
-        subject = get_header(
-            headers,
-            "Subject"
-        )
-
-        sender = get_header(
-            headers,
-            "From"
-        )
-
-        receiver = get_header(
-            headers,
-            "To"
-        )
-
-        date = get_header(
-            headers,
-            "Date"
-        )
-
-        if not subject:
-
-            subject = "(No Subject)"
-
-        if not sender:
-
-            sender = "Unknown Sender"
-
-        if not receiver:
-
-            receiver = "Unknown"
-
-        if not date:
-
-            date = "Unknown"
-
-        body = extract_email_body(
-            payload
-        )
-
-        if not body:
-
-            body = (
-                "No readable text "
-                "was found in this email."
-            )
-
-        label_ids = message.get(
-            "labelIds",
-            []
-        )
-
-        if GMAIL_SPAM_LABEL in label_ids:
-
-            gmail_location = "SPAM"
-
-            gmail_mailbox = "spam"
-
-        elif GMAIL_INBOX_LABEL in label_ids:
-
-            gmail_location = "INBOX"
-
-            gmail_mailbox = "inbox"
-
-        else:
-
-            gmail_location = "OTHER"
-
-            gmail_mailbox = "other"
-
-        scanned_param = request.args.get(
-            "scanned",
-            "0"
-        )
-
-        is_scanned = (
-            scanned_param == "1"
-        )
-
-        result_label = request.args.get(
-            "label"
-        )
-
-        result_spam = request.args.get(
-            "is_spam"
-        )
-
-        result_confidence = request.args.get(
-            "confidence"
-        )
-
-        result_model = request.args.get(
-            "model_name"
-        )
-
-        result_accuracy = request.args.get(
-            "model_accuracy"
-        )
-
-        if not is_scanned:
-
-            is_spam = False
-
-            result_text = (
-                "NOT SCANNED"
-            )
-
-            result_class = (
-                "unscanned"
-            )
-
-            confidence = None
-
-            result_model = None
-
-            result_accuracy = None
-
-        else:
-
-            is_spam = (
-                result_spam == "1"
-            )
-
-            if is_spam:
-
-                result_text = (
-                    "SPAM / SCAM"
-                )
-
-                result_class = (
-                    "spam"
-                )
-
-            else:
-
-                result_text = (
-                    "SAFE"
-                )
-
-                result_class = (
-                    "safe"
-                )
-
-            try:
-
-                confidence = round(
-                    float(
-                        result_confidence
-                        or
-                        0
-                    ),
-                    2
-                )
-
-            except Exception:
-
-                confidence = 0
-
-        safe_subject = html.escape(
-            str(subject)
-        )
-
-        safe_sender = html.escape(
-            str(sender)
-        )
-
-        safe_receiver = html.escape(
-            str(receiver)
-        )
-
-        safe_date = html.escape(
-            str(date)
-        )
-
-        safe_body = html.escape(
-            str(body)
-        )
-
-        if (
-            is_scanned
-            and
-            confidence is not None
-        ):
-
-            confidence_text = (
-                f"{confidence}% confidence"
-            )
-
-        else:
-
-            confidence_text = (
-                "Not scanned"
-            )
-
-        if (
-            is_scanned
-            and
-            result_model
-        ):
-
-            model_accuracy_value = (
-                result_accuracy
-                if result_accuracy
-                else "97.93"
-            )
-
-            model_html = f"""
-<div class="model-info">
-
-    <strong>Detection Model:</strong>
-
-    {html.escape(
-        str(result_model)
-    )}
-
-    &nbsp; | &nbsp;
-
-    <strong>Model Accuracy:</strong>
-
-    {html.escape(
-        str(model_accuracy_value)
-    )}%
-
-</div>
-"""
-
-        else:
-
-            model_html = ""
-
-        if gmail_mailbox == "spam":
-
-            gmail_location_html = """
-<div class="gmail-location spam-location">
-    Gmail Folder: <strong>SPAM</strong>
-</div>
-"""
-
-        elif gmail_mailbox == "inbox":
-
-            gmail_location_html = """
-<div class="gmail-location inbox-location">
-    Gmail Folder: <strong>INBOX</strong>
-</div>
-"""
-
-        else:
-
-            gmail_location_html = f"""
-<div class="gmail-location other-location">
-    Gmail Folder:
-    <strong>
-        {html.escape(
-            str(gmail_location)
-        )}
-    </strong>
-</div>
-"""
-
-        response = f"""
-<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>
-Email Details - SpamGuard AI
-</title>
-
-<style>
-
-* {{
-    box-sizing: border-box;
-}}
-
-body {{
-
-    margin: 0;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background: #f6f8ff;
-
-    color: #17213c;
-}}
-
-.header {{
-
-    height: 70px;
-
-    background: white;
-
-    border-bottom:
-        1px solid #e5e9f2;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 5%;
-}}
-
-.logo {{
-
-    font-size: 20px;
-
-    font-weight: 700;
-}}
-
-.blue {{
-
-    color: #3155ed;
-}}
-
-.back {{
-
-    text-decoration: none;
-
-    color: #3155ed;
-
-    font-weight: 600;
-}}
-
-.container {{
-
-    max-width: 1000px;
-
-    margin: 40px auto;
-
-    padding: 0 20px;
-}}
-
-.email-card {{
-
-    background: white;
-
-    border:
-        1px solid #e5e9f2;
-
-    border-radius: 18px;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 10px 40px
-        rgba(30,40,100,.08);
-}}
-
-.email-top {{
-
-    padding: 30px;
-
-    border-bottom:
-        1px solid #edf0f5;
-}}
-
-.subject {{
-
-    font-size: 26px;
-
-    font-weight: 700;
-
-    margin-bottom: 25px;
-
-    word-break: break-word;
-}}
-
-.info {{
-
-    display: grid;
-
-    grid-template-columns:
-        90px 1fr;
-
-    gap: 12px;
-
-    font-size: 14px;
-}}
-
-.info-label {{
-
-    color: #7b8498;
-
-    font-weight: 600;
-}}
-
-.info-value {{
-
-    color: #344054;
-
-    word-break: break-word;
-}}
-
-.gmail-location {{
-
-    margin-top: 20px;
-
-    padding: 12px 15px;
-
-    border-radius: 10px;
-
-    font-size: 14px;
-
-    font-weight: 600;
-}}
-
-.inbox-location {{
-
-    background: #eef4ff;
-
-    color: #3155ed;
-}}
-
-.spam-location {{
-
-    background: #fff0f0;
-
-    color: #ed4545;
-}}
-
-.other-location {{
-
-    background: #f1f3f7;
-
-    color: #667085;
-}}
-
-.result-box {{
-
-    margin-top: 20px;
-
-    padding: 16px 20px;
-
-    border-radius: 12px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-}}
-
-.result-box.safe {{
-
-    background: #e9faf2;
-
-    color: #0ba95d;
-}}
-
-.result-box.spam {{
-
-    background: #fff0f0;
-
-    color: #ed4545;
-}}
-
-.result-box.unscanned {{
-
-    background: #f1f3f7;
-
-    color: #667085;
-}}
-
-.result-title {{
-
-    font-weight: 700;
-
-    font-size: 16px;
-}}
-
-.confidence {{
-
-    font-size: 14px;
-
-    font-weight: 600;
-}}
-
-.model-info {{
-
-    margin-bottom: 18px;
-
-    color: #667085;
-
-    font-size: 14px;
-}}
-
-.email-body {{
-
-    padding: 30px;
-}}
-
-.email-body h2 {{
-
-    font-size: 18px;
-
-    margin-top: 0;
-
-    margin-bottom: 20px;
-}}
-
-.message-text {{
-
-    background: #f8f9fc;
-
-    border:
-        1px solid #e5e9f2;
-
-    border-radius: 12px;
-
-    padding: 25px;
-
-    white-space: pre-wrap;
-
-    word-break: break-word;
-
-    line-height: 1.7;
-
-    font-size: 14px;
-
-    color: #344054;
-
-    max-height: 650px;
-
-    overflow-y: auto;
-}}
-
-.actions {{
-
-    padding: 25px 30px;
-
-    border-top:
-        1px solid #edf0f5;
-}}
-
-.button {{
-
-    display: inline-block;
-
-    padding:
-        12px 20px;
-
-    border-radius: 9px;
-
-    text-decoration: none;
-
-    font-weight: 600;
-
-    font-size: 14px;
-}}
-
-.dashboard-button {{
-
-    background:
-        linear-gradient(
-            135deg,
-            #3155ed,
-            #5737e8
-        );
-
-    color: white;
-}}
-
-@media(max-width: 600px) {{
-
-    .subject {{
-
-        font-size: 20px;
-    }}
-
-    .info {{
-
-        grid-template-columns: 1fr;
-    }}
-
-    .result-box {{
-
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        gap: 8px;
-    }}
-
-}}
-
-</style>
-
-</head>
-
-<body>
-
-<header class="header">
-
-    <div class="logo">
-
-        Spam<span class="blue">Guard</span> AI
-
-    </div>
-
-    <a
-        href="/dashboard"
-        class="back"
-    >
-
-        ← Dashboard
-
-    </a>
-
-</header>
-
-
-<main class="container">
-
-    <div class="email-card">
-
-        <div class="email-top">
-
-            <div class="subject">
-
-                {safe_subject}
-
-            </div>
-
-
-            <div class="info">
-
-                <div class="info-label">
-                    From
-                </div>
-
-                <div class="info-value">
-                    {safe_sender}
-                </div>
-
-
-                <div class="info-label">
-                    To
-                </div>
-
-                <div class="info-value">
-                    {safe_receiver}
-                </div>
-
-
-                <div class="info-label">
-                    Date
-                </div>
-
-                <div class="info-value">
-                    {safe_date}
-                </div>
-
-            </div>
-
-
-            {gmail_location_html}
-
-
-            <div class="result-box {result_class}">
-
-                <div class="result-title">
-
-                    {result_text}
-
-                </div>
-
-                <div class="confidence">
-
-                    {confidence_text}
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="email-body">
-
-            {model_html}
-
-            <h2>
-                Email Content
-            </h2>
-
-            <div class="message-text">
-
-{safe_body}
-
-            </div>
-
-        </div>
-
-
-        <div class="actions">
-
-            <a
-                href="/dashboard"
-                class="button dashboard-button"
-            >
-
-                ← Back to Dashboard
-
-            </a>
-
-        </div>
-
-    </div>
-
-</main>
-
-</body>
-
-</html>
-"""
-
-        flask_response = app.make_response(
-            response
-        )
-
-        return disable_cache(
-            flask_response
-        )
-
-    except Exception as e:
-
-        print()
-        print("=" * 60)
-        print("EMAIL DETAILS ERROR")
-        print("=" * 60)
-
-        print(e)
-
-        error_response = f"""
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<title>
-Email Details Error
-</title>
-
-</head>
-
-<body style="
-    font-family: Arial;
-    padding: 50px;
-">
-
-<h1>
-Email Details Error
-</h1>
-
-<p>
-{html.escape(str(e))}
-</p>
-
-<br>
-
-<a href="/dashboard">
-Back to Dashboard
-</a>
-
-</body>
-
-</html>
-"""
-
-        return error_response, 500
 
 
 # =========================================================
@@ -2904,7 +2469,11 @@ if __name__ == "__main__":
     print("=" * 60)
 
     app.run(
+
         host="0.0.0.0",
+
         port=5000,
+
         debug=True
+
     )
