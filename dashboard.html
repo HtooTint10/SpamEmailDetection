@@ -3602,7 +3602,39 @@
             updateSectionCount();
 
         }
+/* =========================================================
+   RENDER EMAILS WITH EMPTY STATE ("NO EMAILS FOUND")
+========================================================= */
 
+function renderEmails(emailsList) {
+    const container = document.getElementById("emailTableBody"); // သို့မဟုတ် ဇယားဖော်ပြသည့် Container ID
+    
+    if (!container) return;
+
+    // Mail လုံးဝ (သို့) ရှာမတွေ့တော့သည့်အခါ
+    if (!emailsList || emailsList.length === 0) {
+        container.innerHTML = `
+            <div style="
+                text-align: center;
+                padding: 40px 20px;
+                color: #8b9bb4;
+                font-size: 15px;
+            ">
+                <i class="fa-regular fa-folder-open" style="font-size: 36px; margin-bottom: 12px; opacity: 0.6;"></i>
+                <p>No emails found.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Mail တွေ ရှိနေပါက ပုံမှန်အတိုင်း ဇယားဆွဲထုတ်ရန်
+    let htmlContent = "";
+    emailsList.forEach(email => {
+        // သင့်ရဲ့ မူရင်း ဇယားတန်း တည်ဆောက်ပုံ ကုဒ်များ ဤနေရာတွင် ရှိမည်
+    });
+    
+    container.innerHTML = htmlContent;
+}
 
         /* =========================================================
            SECTION COUNT
