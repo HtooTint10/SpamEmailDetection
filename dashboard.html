@@ -1866,23 +1866,23 @@
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     Gmail Spam
                 </button>
-
+<button
+    class="filter-btn"
+    onclick="setFilter('safe', this)"
+>
+    <i class="fa-solid fa-shield-virus"></i>
+    Safe Emails
+</button>
 
                <button
     class="filter-btn"
-    onclick="setFilter('safe', this)"
+    onclick="setFilter('spam', this)"
 >
     <i class="fa-solid fa-circle-check"></i>
     Spam Detected
 </button>
 
-<button
-    class="filter-btn"
-    onclick="setFilter('spam', this)"
->
-    <i class="fa-solid fa-shield-virus"></i>
-    Safe Emails
-</button>
+
 
             </div>
 
@@ -3259,11 +3259,11 @@
                         <i class="fa-solid fa-envelope-open-text"></i>
 
                         <h3>
-                            No emails found
+                            Loading...
                         </h3>
 
                         <p>
-                            No emails match the current filter.
+                             Retrieving real Gmail Inbox and Spam messages.
                         </p>
 
                     </div>
