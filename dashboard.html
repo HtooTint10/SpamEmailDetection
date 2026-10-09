@@ -2113,6 +2113,17 @@
 
                 clearOldCacheVersions();
 
+                /*
+                 * Mark the first Gmail load as active BEFORE restoring
+                 * cached data. This prevents a brief "No emails found"
+                 * message from appearing while Gmail is still loading.
+                 *
+                 * The loading state is only rendered for the "All Emails"
+                 * filter. Other sections can still show their own empty
+                 * states while the first Gmail request is in progress.
+                 */
+                loadingInbox = true;
+
                 restoreCachedDashboard();
 
                 await ensureGmailInboxLoaded(true);
@@ -2182,7 +2193,7 @@
         ) {
 
             if (
-                loadingInbox ||
+                (loadingInbox && !firstLoad) ||
                 refreshingInbox ||
                 scanningAll
             ) {
@@ -2551,6 +2562,16 @@
                    UI
                 ================================================= */
 
+                /*
+                 * Gmail has finished loading successfully.
+                 *
+                 * Set this BEFORE renderResults(). Otherwise the first
+                 * successful Gmail response can still be rendered as
+                 * "Loading emails..." because renderResults() sees
+                 * initialInboxLoaded === false.
+                 */
+                initialInboxLoaded = true;
+
                 updateNewMailIndicator();
 
                 updateStatistics();
@@ -2560,9 +2581,6 @@
                 updateSectionCount();
 
                 persistDashboard();
-
-
-                initialInboxLoaded = true;
 
 
                 if (
@@ -3246,11 +3264,125 @@
             }
 
 
+            /* =====================================================
+               INITIAL GMAIL LOADING
+
+               IMPORTANT:
+
+               The loading message is ONLY shown for:
+
+                   All Emails
+
+               Inbox, Gmail Spam, Safe Emails, and Spam Detected
+               must show their own empty state when they have no
+               matching messages.
+               ===================================================== */
+
+            if (
+                currentFilter === "all" &&
+                !initialInboxLoaded &&
+                loadingInbox &&
+                inboxEmails.length === 0
+            ) {
+
+                container.innerHTML = `
+
+                    <div class="empty">
+
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+
+                        <h3>
+                            Loading emails...
+                        </h3>
+
+                        <p>
+                            Retrieving your Gmail Inbox and Spam messages. Please wait.
+                        </p>
+
+                    </div>
+
+                `;
+
+                updateSectionCount();
+
+                return;
+
+            }
+
+
             const filtered =
                 getFilteredEmails();
 
 
             if (!filtered.length) {
+
+                let title =
+                    "No emails found";
+
+                let description =
+                    "There are no emails in this section.";
+
+
+                if (
+                    currentFilter === "gmail-inbox"
+                ) {
+
+                    title =
+                        "No Inbox emails found";
+
+                    description =
+                        "There are currently no emails in your Gmail Inbox.";
+
+                }
+
+                else if (
+                    currentFilter === "gmail-spam"
+                ) {
+
+                    title =
+                        "No Gmail Spam emails found";
+
+                    description =
+                        "There are currently no emails in your Gmail Spam folder.";
+
+                }
+
+                else if (
+                    currentFilter === "safe"
+                ) {
+
+                    title =
+                        "No safe emails found";
+
+                    description =
+                        "No emails have been classified as safe yet.";
+
+                }
+
+                else if (
+                    currentFilter === "spam"
+                ) {
+
+                    title =
+                        "No spam detected";
+
+                    description =
+                        "No emails have been classified as spam yet.";
+
+                }
+
+                else if (
+                    currentFilter === "all"
+                ) {
+
+                    title =
+                        "No emails found";
+
+                    description =
+                        "Your Gmail Inbox and Spam folders are currently empty.";
+
+                }
+
 
                 container.innerHTML = `
 
@@ -3259,11 +3391,11 @@
                         <i class="fa-solid fa-envelope-open-text"></i>
 
                         <h3>
-                            Loading...
+                            ${escapeHtml(title)}
                         </h3>
 
                         <p>
-                             Retrieving real Gmail Inbox and Spam messages.
+                            ${escapeHtml(description)}
                         </p>
 
                     </div>
@@ -3430,8 +3562,6 @@
 
                     /*
                      * MOVE BUTTON.
-                     *
-                     * IMPORTANT:
                      *
                      * This is based ONLY on the
                      * REAL Gmail mailbox.
@@ -3602,39 +3732,6 @@
             updateSectionCount();
 
         }
-/* =========================================================
-   RENDER EMAILS WITH EMPTY STATE ("NO EMAILS FOUND")
-========================================================= */
-
-function renderEmails(emailsList) {
-    const container = document.getElementById("emailTableBody"); // သို့မဟုတ် ဇယားဖော်ပြသည့် Container ID
-    
-    if (!container) return;
-
-    // Mail လုံးဝ (သို့) ရှာမတွေ့တော့သည့်အခါ
-    if (!emailsList || emailsList.length === 0) {
-        container.innerHTML = `
-            <div style="
-                text-align: center;
-                padding: 40px 20px;
-                color: #8b9bb4;
-                font-size: 15px;
-            ">
-                <i class="fa-regular fa-folder-open" style="font-size: 36px; margin-bottom: 12px; opacity: 0.6;"></i>
-                <p>No emails found.</p>
-            </div>
-        `;
-        return;
-    }
-
-    // Mail တွေ ရှိနေပါက ပုံမှန်အတိုင်း ဇယားဆွဲထုတ်ရန်
-    let htmlContent = "";
-    emailsList.forEach(email => {
-        // သင့်ရဲ့ မူရင်း ဇယားတန်း တည်ဆောက်ပုံ ကုဒ်များ ဤနေရာတွင် ရှိမည်
-    });
-    
-    container.innerHTML = htmlContent;
-}
 
         /* =========================================================
            SECTION COUNT
@@ -4365,11 +4462,7 @@ function renderEmails(emailsList) {
                         : "SAFE";
 
 
-                showToast(
-                    `${resultLabel} — ${
-                        result.confidence ?? 0
-                    }% confidence`
-                );
+              showToast(resultLabel);
 
 
             } catch (error) {
